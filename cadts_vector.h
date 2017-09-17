@@ -6,40 +6,38 @@
 #define CADTS_VECTOR(NAME,STRU) \
 \
 typedef struct {\
-    int _len;\
-    int _size;\
-    STRU items[0];\
+    int len;\
+    int size;\
+    STRU *items;\
 } NAME;\
 \
-size_t  NAME##_size(NAME **strup){\
-    NAME * stru = *strup;\
-    return sizeof(NAME)+sizeof(STRU)*stru->_size;\
+void NAME##_init(NAME *vect, int size){\
+    vect->len = 0;\
+    if(size<1) size = 1;\
+    vect->size = size;\
+    vect->items = malloc(sizeof(STRU)*vect->size);\
 }\
-NAME *new_##NAME(){\
-    NAME *stru = malloc(sizeof(NAME)+sizeof(STRU)*4);\
-    stru->_size = 4;\
-    stru->_len = 0;\
-    return stru;\
+\
+void NAME##_free(NAME *vect){\
+    free(vect->items);\
 }\
-void free_##NAME(NAME **strup){\
-    free(*strup);\
-    strup = NULL;\
+\
+void NAME##_empty(NAME *vect){\
+    vect->len = 0;\
 }\
-void NAME##_push(NAME **strup, STRU val){\
-    NAME *stru = *strup;\
-    if(stru->_len==stru->_size){\
-        stru->_size*=2;\
-        *strup = realloc(strup,NAME##_size(strup));\
-        stru = *strup;\
+\
+void NAME##_push(NAME *vect, STRU stru){\
+    if(vect->len==vect->size){\
+        vect->size *= 2;\
+        vect->items = realloc(vect->items,sizeof(STRU)*vect->size);\
     }\
-    stru->items[stru->_len] = val;\
-    stru->_len++;\
+    vect->items[vect->len] = stru;\
+    vect->len += 1;\
 }\
-STRU NAME##_pop(NAME **strup){\
-    NAME *stru = *strup;\
-    stru->_len--;\
-    return stru->items[stru->_len];\
+\
+STRU NAME##_pop(NAME *vect){\
+    vect->len -= 1;\
+    return vect->items[vect->len];\
 }\
-
 
 #endif
