@@ -70,12 +70,16 @@ STRU *NAME##_del(NAME *dlist, STRU *posi){\
     if(aft!=NULL) aft->pre = bef;\
     if(dlist->len!=1){\
         if(node==dlist->ini) dlist->ini = aft;\
-        else if(node==dlist->end) dlist->end = bef;\
+        else if(node==dlist->end){\
+            dlist->end = bef;\
+            aft = NULL;\
+        }\
     }\
     NAME##_cadts_node *aftend = dlist->end->post;\
     dlist->end->post = node;\
     node->post = aftend;\
     dlist->len -= 1;\
+    if(aft==NULL) return NULL;\
     return &aft->item;\
 }\
 \
@@ -126,12 +130,16 @@ void NAME##_endadd(NAME *dlist, STRU stru){\
     else NAME##_afteradd(dlist,&dlist->end->item,stru);\
 }\
 \
-void NAME##_inidel(NAME *dlist, STRU stru){\
-    NAME##_del(dlist,&dlist->ini->item);\
+STRU NAME##_inipop(NAME *dlist){\
+    STRU *item = &dlist->ini->item;\
+    NAME##_del(dlist,item);\
+    return *item;\
 }\
 \
-void NAME##_enddel(NAME *dlist, STRU stru){\
-    NAME##_del(dlist,&dlist->end->item);\
+STRU NAME##_endpop(NAME *dlist){\
+    STRU *item = &dlist->end->item;\
+    NAME##_del(dlist,item);\
+    return *item;\
 }\
 STRU *NAME##_next(NAME *dlist, STRU *posi){\
     if(posi==NULL){\
