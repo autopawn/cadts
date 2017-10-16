@@ -74,6 +74,8 @@ STRU *NAME##_del(NAME *dlist, STRU *posi){\
             dlist->end = bef;\
             aft = NULL;\
         }\
+    }else{\
+        aft = NULL;\
     }\
     NAME##_cadts_node *aftend = dlist->end->post;\
     dlist->end->post = node;\

@@ -19,6 +19,10 @@ void NAME##_init(NAME *heap, int size){\
     heap->items = malloc(sizeof(STRU)*heap->size);\
 }\
 \
+void NAME##_free(NAME *heap){\
+    free(heap->items);\
+}\
+\
 STRU NAME##_peek(NAME *heap){\
     if(heap->len<=0){\
         fprintf(stderr,"ERROR: peek on empty heap!\n");\
