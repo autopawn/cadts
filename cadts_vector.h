@@ -26,7 +26,7 @@ void NAME##_empty(NAME *vect){\
     vect->len = 0;\
 }\
 \
-void NAME##_push(NAME *vect, STRU stru){\
+void NAME##_endadd(NAME *vect, STRU stru){\
     if(vect->len==vect->size){\
         vect->size *= 2;\
         vect->items = realloc(vect->items,sizeof(STRU)*vect->size);\
@@ -35,7 +35,7 @@ void NAME##_push(NAME *vect, STRU stru){\
     vect->len += 1;\
 }\
 \
-STRU NAME##_pop(NAME *vect){\
+STRU NAME##_endpop(NAME *vect){\
     vect->len -= 1;\
     return vect->items[vect->len];\
 }\

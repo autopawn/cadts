@@ -58,7 +58,7 @@ STRU NAME##_poll(NAME *heap){\
     return ret;\
 }\
 \
-void NAME##_insert(NAME *heap, STRU val){\
+void NAME##_add(NAME *heap, STRU val){\
     if(heap->len==heap->size){\
         heap->size *= 2;\
         heap->items = realloc(heap->items,sizeof(STRU)*heap->size);\
