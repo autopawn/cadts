@@ -64,7 +64,9 @@ int main(int argc, char const *argv[]){
     for(int k=0;k<5;k++) spoint = intdllist_next(&dlink,spoint);
     for(int k=0;k<3;k++){
         // Delete and advance pointer
-        spoint = intdllist_del(&dlink,spoint);
+        int *next = intdllist_next(&dlink,spoint);
+        intdllist_del(&dlink,spoint);
+        spoint = next;
     }
     // Add some more values
     for(int i=0;i<5;i++){

@@ -58,7 +58,11 @@ STRU *NAME##_last(NAME *dlist){\
     return &dlist->end->item;\
 }\
 \
-STRU *NAME##_del(NAME *dlist, STRU *posi){\
+void NAME##_del(NAME *dlist, STRU *posi){\
+    if(posi==NULL){\
+        fprintf(stderr,"ERROR: del on null pointer!\n");\
+        exit(1);\
+    }\
     if(dlist->len<=0){\
         fprintf(stderr,"ERROR: del on empty dlinkedlist!\n");\
         exit(1);\
@@ -70,19 +74,12 @@ STRU *NAME##_del(NAME *dlist, STRU *posi){\
     if(aft!=NULL) aft->pre = bef;\
     if(dlist->len!=1){\
         if(node==dlist->ini) dlist->ini = aft;\
-        else if(node==dlist->end){\
-            dlist->end = bef;\
-            aft = NULL;\
-        }\
-    }else{\
-        aft = NULL;\
+        else if(node==dlist->end) dlist->end = bef;\
     }\
     NAME##_cadts_node *aftend = dlist->end->post;\
     dlist->end->post = node;\
     node->post = aftend;\
     dlist->len -= 1;\
-    if(aft==NULL) return NULL;\
-    return &aft->item;\
 }\
 \
 void NAME##_afteradd(NAME *dlist, STRU *posi, STRU stru){\
@@ -145,7 +142,7 @@ STRU NAME##_endpop(NAME *dlist){\
 }\
 STRU *NAME##_next(NAME *dlist, STRU *posi){\
     if(posi==NULL){\
-        fprintf(stderr,"ERROR: next on empty pointer!\n");\
+        fprintf(stderr,"ERROR: next on null pointer!\n");\
         exit(1);\
     }\
     if(dlist->len==0){\
@@ -159,7 +156,7 @@ STRU *NAME##_next(NAME *dlist, STRU *posi){\
 \
 STRU *NAME##_prev(NAME *dlist, STRU *posi){\
     if(posi==NULL){\
-        fprintf(stderr,"ERROR: prev on empty pointer!\n");\
+        fprintf(stderr,"ERROR: prev on null pointer!\n");\
         exit(1);\
     }\
     if(dlist->len==0){\
