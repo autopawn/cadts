@@ -7,3 +7,5 @@
  .-´.´) /--| /           data structures.
 '--´  '-"  '-"  
 ```
+
+**WARNING:** This library is still being developed, thus it is not stable and many changes may arise.
