@@ -48,6 +48,24 @@ void NAME##_free(NAME *dlist){\
     free(dlist->nodes);\
 }\
 \
+void _##NAME##_extend(NAME *dlist){\
+    dlist->size *= 2;\
+    NAME##_cadts_node *old = dlist->nodes;\
+    dlist->nodes = realloc(dlist->nodes,sizeof(NAME##_cadts_node)*dlist->size);\
+    if(dlist->nodes!=old){\
+        for(int i=0;i<dlist->size/2;i++){\
+            dlist->nodes[i].pre += (dlist->nodes-old);\
+            dlist->nodes[i].post += (dlist->nodes-old);\
+        }\
+        dlist->ini += (dlist->nodes-old);\
+        dlist->end += (dlist->nodes-old);\
+    }\
+    for(int i=dlist->size/2;i<dlist->size-1;i++){\
+        dlist->nodes[i].post = &dlist->nodes[i+1];\
+    }\
+    dlist->end->post = &dlist->nodes[dlist->size/2];\
+}\
+\
 STRU *NAME##_first(NAME *dlist){\
     if(dlist->len==0) return NULL;\
     return &dlist->ini->item;\
@@ -59,12 +77,12 @@ STRU *NAME##_last(NAME *dlist){\
 }\
 \
 void NAME##_del(NAME *dlist, STRU *posi){\
-    if(posi==NULL){\
-        fprintf(stderr,"ERROR: del on null pointer!\n");\
-        exit(1);\
-    }\
     if(dlist->len<=0){\
         fprintf(stderr,"ERROR: del on empty dlinkedlist!\n");\
+        exit(1);\
+    }\
+    if(posi==NULL){\
+        fprintf(stderr,"ERROR: del on null pointer!\n");\
         exit(1);\
     }\
     NAME##_cadts_node *node = (NAME##_cadts_node *) posi;\
@@ -92,14 +110,7 @@ void NAME##_afteradd(NAME *dlist, STRU *posi, STRU stru){\
         dlist->ini = dlist->end;\
         dlist->len = 1;\
     }else{\
-        if(dlist->len==dlist->size){\
-            dlist->size *= 2;\
-            dlist->nodes = realloc(dlist->nodes,sizeof(NAME##_cadts_node)*dlist->size);\
-            for(int i=dlist->size/2;i<dlist->size-1;i++){\
-                dlist->nodes[i].post = &dlist->nodes[i+1];\
-            }\
-            dlist->end->post = &dlist->nodes[dlist->size/2];\
-        }\
+        if(dlist->len==dlist->size) _##NAME##_extend(dlist);\
         NAME##_cadts_node *new_node = dlist->end->post;\
         dlist->end->post = new_node->post;\
         NAME##_cadts_node *posin = (NAME##_cadts_node *) posi;\
@@ -141,12 +152,12 @@ STRU NAME##_endpop(NAME *dlist){\
     return *item;\
 }\
 STRU *NAME##_next(NAME *dlist, STRU *posi){\
-    if(posi==NULL){\
-        fprintf(stderr,"ERROR: next on null pointer!\n");\
-        exit(1);\
-    }\
     if(dlist->len==0){\
         fprintf(stderr,"ERROR: next on empty dlinkedlist!\n");\
+        exit(1);\
+    }\
+    if(posi==NULL){\
+        fprintf(stderr,"ERROR: next on null pointer!\n");\
         exit(1);\
     }\
     NAME##_cadts_node *posin = (NAME##_cadts_node *) posi;\
@@ -155,12 +166,12 @@ STRU *NAME##_next(NAME *dlist, STRU *posi){\
 }\
 \
 STRU *NAME##_prev(NAME *dlist, STRU *posi){\
-    if(posi==NULL){\
-        fprintf(stderr,"ERROR: prev on null pointer!\n");\
-        exit(1);\
-    }\
     if(dlist->len==0){\
         fprintf(stderr,"ERROR: prev on empty dlinkedlist!\n");\
+        exit(1);\
+    }\
+    if(posi==NULL){\
+        fprintf(stderr,"ERROR: prev on null pointer!\n");\
         exit(1);\
     }\
     NAME##_cadts_node *posin = (NAME##_cadts_node *) posi;\

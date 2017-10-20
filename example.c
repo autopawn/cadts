@@ -2,6 +2,7 @@
 
 #include "cadts_vector.h"
 #include "cadts_heap.h"
+#include "cadts_linkedlist.h"
 #include "cadts_dlinkedlist.h"
 
 // Create floatvec, a struct that is a vector of floats:
@@ -13,6 +14,9 @@ CADTS_HEAP(intheap,int,A<B)
 
 // Create intdllist, a struct that is a double linked list of ints.
 CADTS_DLINKEDLIST(intdllist,int)
+
+// Create charllist, a struct that is a linked list of chars.
+CADTS_DLINKEDLIST(charllist,char)
 
 int main(int argc, char const *argv[]){
     printf("TESTING VECTOR:\n");
