@@ -16,7 +16,7 @@ CADTS_HEAP(intheap,int,A<B)
 CADTS_DLINKEDLIST(intdllist,int)
 
 // Create charllist, a struct that is a linked list of chars.
-CADTS_DLINKEDLIST(charllist,char)
+CADTS_LINKEDLIST(charllist,char)
 
 int main(int argc, char const *argv[]){
     printf("TESTING VECTOR:\n");
@@ -76,7 +76,7 @@ int main(int argc, char const *argv[]){
     for(int i=0;i<5;i++){
         intdllist_endadd(&dlink,100+i);
     }
-    // Add some more values
+    // Pop last value
     int last = intdllist_endpop(&dlink);
     printf("last: %d\n",last);
     for(int *ip=intdllist_first(&dlink); ip!=NULL; ip=intdllist_next(&dlink,ip)){
@@ -84,6 +84,35 @@ int main(int argc, char const *argv[]){
     }
     printf("\n");
     intdllist_free(&dlink);
+    //
+    //
+    printf("TESTING LINKEDLIST:\n");
+    charllist clink;
+    charllist_init(&clink,0);
+    // Add values
+    for(int i=0;i<10;i++){
+        charllist_endadd(&clink,'A'+i);
+        charllist_iniadd(&clink,'z'-i);
+    }
+    // Delete 3 consecutive values:
+    char *cpoint = charllist_first(&clink);
+    for(int k=0;k<5;k++) cpoint = charllist_next(&clink,cpoint);
+    for(int k=0;k<3;k++){
+        // Delete 3 values after it
+        charllist_afterdel(&clink,cpoint);
+    }
+    // Add some more values
+    for(int i=0;i<5;i++){
+        charllist_endadd(&clink,'v'+i);
+    }
+    // Pop first value
+    char lastc = charllist_inipop(&clink);
+    printf("first: %c\n",lastc);
+    for(char *ip=charllist_first(&clink); ip!=NULL; ip=charllist_next(&clink,ip)){
+        printf("%c ",*ip);
+    }
+    printf("\n");
+    charllist_free(&clink);
 
     return 0;
 }

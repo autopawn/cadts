@@ -141,15 +141,15 @@ void NAME##_endadd(NAME *dlist, STRU stru){\
 }\
 \
 STRU NAME##_inipop(NAME *dlist){\
-    STRU *item = &dlist->ini->item;\
-    NAME##_del(dlist,item);\
-    return *item;\
+    STRU item = dlist->ini->item;\
+    NAME##_del(dlist,(STRU *)dlist->ini);\
+    return item;\
 }\
 \
 STRU NAME##_endpop(NAME *dlist){\
-    STRU *item = &dlist->end->item;\
-    NAME##_del(dlist,item);\
-    return *item;\
+    STRU item = dlist->end->item;\
+    NAME##_del(dlist,(STRU *)dlist->end);\
+    return item;\
 }\
 STRU *NAME##_next(NAME *dlist, STRU *posi){\
     if(dlist->len==0){\

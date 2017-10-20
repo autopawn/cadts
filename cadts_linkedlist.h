@@ -42,10 +42,10 @@ void _##NAME##_extend(NAME *llist){\
     llist->nodes = realloc(llist->nodes,sizeof(NAME##_cadts_node)*llist->size);\
     if(llist->nodes!=old){\
         for(int i=0;i<llist->size/2;i++){\
-            llist->nodes[i]->post += (dlist->nodes-old);\
+            llist->nodes[i].post += (llist->nodes-old);\
         }\
-        llist->ini += (dlist->nodes-old);\
-        llist->end += (dlist->nodes-old);\
+        llist->ini += (llist->nodes-old);\
+        llist->end += (llist->nodes-old);\
     }\
     for(int i=llist->size/2;i<llist->size-1;i++){\
         llist->nodes[i].post = &llist->nodes[i+1];\
@@ -82,17 +82,9 @@ void NAME##_iniadd(NAME *llist, STRU stru){\
         llist->end->post = new_node->post;\
         new_node->post = llist->ini;\
         llist->ini = new_node;\
+        new_node->item = stru;\
         llist->len += 1;\
     }\
-}\
-STRU NAME##_inipop(NAME *llist){\
-    if(dlist->len<=0){\
-        fprintf(stderr,"ERROR: inipop on empty linkedlist!\n");\
-        exit(1);\
-    }\
-    NAME##_cadts_node *posin = llist->ini;\
-    NAME##_afterdel(llist,NULL);\
-    return posin->item;\
 }\
 \
 void NAME##_afterdel(NAME *llist, STRU *posi){\
@@ -100,11 +92,11 @@ void NAME##_afterdel(NAME *llist, STRU *posi){\
         fprintf(stderr,"ERROR: afterdel on empty linkedlist!\n");\
         exit(1);\
     }\
-    if(posi==llist->end){\
+    NAME##_cadts_node *posin = (NAME##_cadts_node *) posi;\
+    if(posin==llist->end){\
         fprintf(stderr,"ERROR: afterdel on ending item!\n");\
         exit(1);\
     }\
-    NAME##_cadts_node *posin = (NAME##_cadts_node *) posi;\
     if(posi==NULL){\
         NAME##_cadts_node *del_node = llist->ini;\
         llist->ini = llist->ini->post;\
@@ -118,6 +110,16 @@ void NAME##_afterdel(NAME *llist, STRU *posi){\
         if(del_node==llist->end) llist->end = posin;\
     }\
     llist->len -= 1;\
+}\
+\
+STRU NAME##_inipop(NAME *llist){\
+    if(llist->len<=0){\
+        fprintf(stderr,"ERROR: inipop on empty linkedlist!\n");\
+        exit(1);\
+    }\
+    STRU item = llist->ini->item;\
+    NAME##_afterdel(llist,NULL);\
+    return item;\
 }\
 \
 STRU *NAME##_next(NAME *llist, STRU *posi){\
