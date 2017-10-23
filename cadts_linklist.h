@@ -40,10 +40,10 @@ STRU NAME_itget(NAME *llist)
 ^ O(1) Gets the item on the node where the iterator is.
 
 STRU NAME_itpop(NAME *llist)
-^ O(1) Deletes the item on the node where the iterator is and returns its value.
+^ O(1) Deletes the item on the node where the iterator is and returns its value, the iterator moves to the next position.
 
 STRU NAME_inipop(NAME *llist)
-^ O(1) Deletes an item on the first position of the list (doesn't change iterator).
+^ O(1) Deletes an item on the first position of the list (moves the iterator to the next position of the list if it is at the beginning).
 
 void NAME_itaddbefore(NAME *llist, STRU val)
 ^ O(1) Adds an item node previous to the iterator's position. If it is outside, its added at the end of the list.
@@ -52,10 +52,10 @@ void NAME_itaddafter(NAME *llist, STRU val)
 ^ O(1) Adds an item node posterior to the iterator's position. If it is outside, its added at the beginning of the list.
 
 void NAME_endadd(NAME *llist, STRU val)
-^ O(1) Adds an item node at the end of the list (doesn't change iterator).
+^ O(1) Adds an item node at the end of the list. (doens't change the iterator).
 
 void NAME_iniadd(NAME *llist, STRU val)
-^ O(1) Adds an item node at the beginning of the list (doesn't change iterator).
+^ O(1) Adds an item node at the beginning of the list (doens't change the iterator).
 
 ##### VARIABLES:
 
@@ -173,11 +173,15 @@ STRU NAME##_itpop(NAME *llist){\
 }\
 \
 STRU NAME##_inipop(NAME *llist){\
-    NAME##_node *prepiter = llist->piter;\
-    NAME##_itini(llist);\
-    STRU retval = NAME##_itpop(llist);\
-    llist->piter = prepiter;\
-    return retval;\
+    if(llist->piter == (NAME##_node *)&llist->ini){\
+        return NAME##_itpop(llist);\
+    }else{\
+        NAME##_node *prepiter = llist->piter;\
+        NAME##_itini(llist);\
+        STRU retval = NAME##_itpop(llist);\
+        llist->piter = prepiter;\
+        return retval;\
+    }\
 }\
 \
 void NAME##_itaddbefore(NAME *llist, STRU val){\
