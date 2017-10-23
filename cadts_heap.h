@@ -4,6 +4,40 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*
+##### DEFINITION:
+
+A heap is a binary tree where each node is smaller (or another propriety) than their children. It can be used to retrieve in O(logn) the smallest item.
+
+#define CADTS_HEAP(NAME,STRU,A_CMP_B)
+^ Where NAME is the name that the ADT will get and STRU is the datatype of its items.
+A_CMP_B is a comparison between a literal "A" and a literal "B", to use the comparison "smaller", it can be "A<B"
+
+##### FUNCTIONS:
+
+void NAME_init(NAME *heap, int size)
+^ Initializes a heap of the given size (values smaller than 1 are set to 1).
+
+void NAME_free(NAME *heap)
+^ Liberates the memory requested by the heap.
+
+STRU NAME_peek(NAME *heap)
+^ O(1) Get the smaller item.
+
+STRU NAME_poll(NAME *heap)
+^ O(logn) Gets the smaller item and deletes it from the heap.
+
+void NAME_add(NAME *heap, STRU val)
+^ O(logn) Adds an item to the heap.
+
+##### VARIABLES:
+
+int vect->len
+^ The number of items in the heap (read only!)
+
+#####
+*/
+
 #define CADTS_HEAP(NAME,STRU,A_CMP_B) \
 \
 typedef struct {\

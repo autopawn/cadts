@@ -5,9 +5,64 @@
 #include <stdlib.h>
 
 /*
-"piter" is the pointer to the node previous to the iterator.
-    When piter is NULL is outside the list.
-    When it is (NAME##_node *)&llist->ini it is at the begining.
+##### DEFINITION:
+
+A linked list holds nodes, each node holds a struct and a reference to another node.
+
+The list also has an inner iterator to perform operations inside it. The iterator can be over a node or "outside" the list.
+
+Is worth noting that the iterator can't go backwards.
+
+#define CADTS_LINKLIST(NAME,STRU)
+^ Where NAME is the name that the ADT will get and STRU is the datatype of its items.
+
+##### FUNCTIONS:
+
+void NAME_init(NAME *llist, int size)
+^ Initializes a linked list of the given size (values smaller than 1 are set to 1).
+
+void NAME_free(NAME *llist)
+^ Liberates the memory requested by the linked list.
+
+void NAME_itini(NAME *llist)
+^ O(1) Moves the iterator to the beginning of the list.
+
+void NAME_itnext(NAME *llist)
+^ O(1) Moves the iterator to the next node.
+
+void NAME_itout(NAME *llist)
+^ O(1) Moves the iterator outside the list.
+
+int NAME_itvalid(NAME *llist)
+^ O(1) Returns 1 if the iterator is inside the list.
+
+STRU NAME_itget(NAME *llist)
+^ O(1) Gets the item on the node where the iterator is.
+
+STRU NAME_itpop(NAME *llist)
+^ O(1) Deletes the item on the node where the iterator is and returns its value.
+
+STRU NAME_inipop(NAME *llist)
+^ O(1) Deletes an item on the first position of the list (doesn't change iterator).
+
+void NAME_itaddbefore(NAME *llist, STRU val)
+^ O(1) Adds an item node previous to the iterator's position. If it is outside, its added at the end of the list.
+
+void NAME_itaddafter(NAME *llist, STRU val)
+^ O(1) Adds an item node posterior to the iterator's position. If it is outside, its added at the beginning of the list.
+
+void NAME_endadd(NAME *llist, STRU val)
+^ O(1) Adds an item node at the end of the list (doesn't change iterator).
+
+void NAME_iniadd(NAME *llist, STRU val)
+^ O(1) Adds an item node at the beginning of the list (doesn't change iterator).
+
+##### VARIABLES:
+
+int vect->len
+^ The number of items in the list (read only!)
+
+#####
 */
 
 #define CADTS_LINKLIST(NAME,STRU) \

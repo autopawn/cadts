@@ -11,14 +11,11 @@ CADTS_VECTOR(floatvec,float)
 // the third argument should be a comparison of "A" and "B", which ints in this case.
 CADTS_HEAP(intheap,int,A<B)
 
-// Create intdllist, a struct that is a double linked list of ints.
-// CADTS_DLINKEDLIST(intdllist,int)
-
 // Create intlist, a struct that is a linked list of chars.
 CADTS_LINKLIST(intlist,int)
 
 int main(int argc, char const *argv[]){
-    printf("TESTING VECTOR:\n");
+    printf("VECTOR:\n");
     floatvec fvec;
     floatvec_init(&fvec,0);
     for(int i=0;i<20;i++){
@@ -35,7 +32,7 @@ int main(int argc, char const *argv[]){
     floatvec_free(&fvec);
     //
     //
-    printf("TESTING HEAP:\n");
+    printf("HEAP:\n");
     intheap heap;
     intheap_init(&heap,0);
     intheap_add(&heap,5);
@@ -53,39 +50,7 @@ int main(int argc, char const *argv[]){
     }
     intheap_free(&heap);
     //
-    //
-    // printf("TESTING DLINKEDLIST:\n");
-    // intdllist dlink;
-    // intdllist_init(&dlink,0);
-    // // Add values
-    // for(int i=0;i<10;i++){
-    //     intdllist_endadd(&dlink,i);
-    //     intdllist_iniadd(&dlink,-i);
-    // }
-    // // Delete 3 consecutive values:
-    // int *spoint = intdllist_first(&dlink);
-    // for(int k=0;k<5;k++) spoint = intdllist_next(&dlink,spoint);
-    // for(int k=0;k<3;k++){
-    //     // Delete and advance pointer
-    //     int *next = intdllist_next(&dlink,spoint);
-    //     intdllist_del(&dlink,spoint);
-    //     spoint = next;
-    // }
-    // // Add some more values
-    // for(int i=0;i<5;i++){
-    //     intdllist_endadd(&dlink,100+i);
-    // }
-    // // Pop last value
-    // int last = intdllist_endpop(&dlink);
-    // printf("last: %d\n",last);
-    // for(int *ip=intdllist_first(&dlink); ip!=NULL; ip=intdllist_next(&dlink,ip)){
-    //     printf("%d ",*ip);
-    // }
-    // printf("\n");
-    // intdllist_free(&dlink);
-    //
-    //
-    printf("TESTING LINKEDLIST:\n");
+    printf("LINKEDLIST:\n");
     intlist clink;
     intlist_init(&clink,0);
     // Add values
