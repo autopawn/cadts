@@ -44,18 +44,18 @@ typedef struct {\
     STRU *items;\
 } NAME;\
 \
-void NAME##_init(NAME *vect, int size){\
+static void NAME##_init(NAME *vect, int size){\
     vect->len = 0;\
     if(size<1) size = 1;\
     vect->size = size;\
     vect->items = malloc(sizeof(STRU)*vect->size);\
 }\
 \
-void NAME##_free(NAME *vect){\
+static void NAME##_free(NAME *vect){\
     free(vect->items);\
 }\
 \
-void NAME##_endadd(NAME *vect, STRU stru){\
+static void NAME##_endadd(NAME *vect, STRU stru){\
     if(vect->len==vect->size){\
         vect->size *= 2;\
         vect->items = realloc(vect->items,sizeof(STRU)*vect->size);\
@@ -64,7 +64,7 @@ void NAME##_endadd(NAME *vect, STRU stru){\
     vect->len += 1;\
 }\
 \
-STRU NAME##_endpop(NAME *vect){\
+static STRU NAME##_endpop(NAME *vect){\
     vect->len -= 1;\
     return vect->items[vect->len];\
 }\

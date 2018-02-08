@@ -82,7 +82,7 @@ typedef struct {\
     NAME##_node *piter;\
 } NAME;\
 \
-void NAME##_init(NAME *llist, int size){\
+static void NAME##_init(NAME *llist, int size){\
     llist->len = 0;\
     if(size<1) size=1;\
     llist->size = size;\
@@ -96,11 +96,11 @@ void NAME##_init(NAME *llist, int size){\
     llist->piter = NULL;\
 }\
 \
-void NAME##_free(NAME *llist){\
+static void NAME##_free(NAME *llist){\
     free(llist->nodes);\
 }\
 \
-void NAME##_extend(NAME *llist){\
+static void NAME##_extend(NAME *llist){\
     llist->size *= 2;\
     NAME##_node *old = llist->nodes;\
     llist->nodes = realloc(llist->nodes,sizeof(NAME##_node)*llist->size);\
@@ -121,12 +121,12 @@ void NAME##_extend(NAME *llist){\
     llist->nodes[llist->size-1].next = &llist->nodes[llist->size-1];\
 }\
 \
-void NAME##_itini(NAME *llist){\
+static void NAME##_itini(NAME *llist){\
     llist->piter = (NAME##_node *)&llist->ini;\
     if(llist->piter==llist->end) llist->piter=NULL;\
 }\
 \
-void NAME##_itnext(NAME *llist){\
+static void NAME##_itnext(NAME *llist){\
     if(llist->piter==NULL){\
         fprintf(stderr,"ERROR: next with iterator outside.\n");\
         exit(1);\
@@ -135,15 +135,15 @@ void NAME##_itnext(NAME *llist){\
     if(llist->piter==llist->end) llist->piter = NULL;\
 }\
 \
-void NAME##_itout(NAME *llist){\
+static void NAME##_itout(NAME *llist){\
     llist->piter = NULL;\
 }\
 \
-int NAME##_itvalid(NAME *llist){\
+static int NAME##_itvalid(NAME *llist){\
     return llist->piter!=NULL;\
 }\
 \
-STRU NAME##_itget(NAME *llist){\
+static STRU NAME##_itget(NAME *llist){\
     if(!NAME##_itvalid(llist)){\
         fprintf(stderr,"ERROR: get with iterator outside.\n");\
         exit(1);\
@@ -151,7 +151,7 @@ STRU NAME##_itget(NAME *llist){\
     return llist->piter->next->item;\
 }\
 \
-STRU NAME##_itpop(NAME *llist){\
+static STRU NAME##_itpop(NAME *llist){\
     if(!NAME##_itvalid(llist)){\
         fprintf(stderr,"ERROR: pop with iterator outside.\n");\
         exit(1);\
@@ -172,7 +172,7 @@ STRU NAME##_itpop(NAME *llist){\
     return *retval;\
 }\
 \
-STRU NAME##_inipop(NAME *llist){\
+static STRU NAME##_inipop(NAME *llist){\
     if(llist->piter == (NAME##_node *)&llist->ini){\
         return NAME##_itpop(llist);\
     }else{\
@@ -184,7 +184,7 @@ STRU NAME##_inipop(NAME *llist){\
     }\
 }\
 \
-void NAME##_itaddbefore(NAME *llist, STRU val){\
+static void NAME##_itaddbefore(NAME *llist, STRU val){\
     if(llist->len==llist->size) NAME##_extend(llist);\
     NAME##_node *new_node = llist->end->next;\
     if(llist->piter==NULL){\
@@ -198,7 +198,7 @@ void NAME##_itaddbefore(NAME *llist, STRU val){\
     llist->len += 1;\
 }\
 \
-void NAME##_itaddafter(NAME *llist, STRU val){\
+static void NAME##_itaddafter(NAME *llist, STRU val){\
     NAME##_node *prepiter = llist->piter;\
     if(llist->piter==NULL){\
         NAME##_itini(llist);\
@@ -209,14 +209,14 @@ void NAME##_itaddafter(NAME *llist, STRU val){\
     llist->piter = prepiter;\
 }\
 \
-void NAME##_endadd(NAME *llist, STRU val){\
+static void NAME##_endadd(NAME *llist, STRU val){\
     NAME##_node *prepiter = llist->piter;\
     llist->piter = NULL;\
     NAME##_itaddbefore(llist,val);\
     llist->piter = prepiter;\
 }\
 \
-void NAME##_iniadd(NAME *llist, STRU val){\
+static void NAME##_iniadd(NAME *llist, STRU val){\
     NAME##_node *prepiter = llist->piter;\
     NAME##_itini(llist);\
     NAME##_itaddbefore(llist,val);\

@@ -46,25 +46,25 @@ typedef struct {\
     STRU *items;\
 } NAME;\
 \
-void NAME##_init(NAME *heap, int size){\
+static void NAME##_init(NAME *heap, int size){\
     heap->len = 0;\
     if(size<1) size = 1;\
     heap->size = size;\
     heap->items = malloc(sizeof(STRU)*heap->size);\
 }\
 \
-void NAME##_free(NAME *heap){\
+static void NAME##_free(NAME *heap){\
     free(heap->items);\
 }\
 \
-STRU NAME##_peek(NAME *heap){\
+static STRU NAME##_peek(NAME *heap){\
     if(heap->len<=0){\
         fprintf(stderr,"ERROR: peek on empty heap!\n");\
         exit(1);\
     }\
     return heap->items[0];\
 }\
-STRU NAME##_poll(NAME *heap){\
+static STRU NAME##_poll(NAME *heap){\
     if(heap->len<=0){\
         fprintf(stderr,"ERROR: pool on empty heap!\n");\
         exit(1);\
@@ -96,7 +96,7 @@ STRU NAME##_poll(NAME *heap){\
     return ret;\
 }\
 \
-void NAME##_add(NAME *heap, STRU val){\
+static void NAME##_add(NAME *heap, STRU val){\
     if(heap->len==heap->size){\
         heap->size *= 2;\
         heap->items = realloc(heap->items,sizeof(STRU)*heap->size);\
