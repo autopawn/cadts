@@ -1,6 +1,8 @@
 #ifndef CADTS_LINKLIST_H
 #define CADTS_LINKLIST_H
 
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 #include <stdio.h>
 #include <stdlib.h>
 

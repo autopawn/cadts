@@ -1,6 +1,8 @@
 #ifndef CADTS_HEAP_H
 #define CADTS_HEAP_H
 
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -1,6 +1,8 @@
 #ifndef CADTS_VECTOR_H
 #define CADTS_VECTOR_H
 
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 #include <stdlib.h>
 
 /*
