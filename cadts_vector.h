@@ -29,10 +29,10 @@ STRU NAME_endpop(NAME *vect)
 
 ##### VARIABLES:
 
-int vect->len
+int vect.len
 ^ The number of items in the vector (read only!)
 
-STRU vect->items[k]
+STRU vect.items[k]
 ^ Set or get the struct at position k.
 
 #####

@@ -34,7 +34,7 @@ void NAME_add(NAME *heap, STRU val)
 
 ##### VARIABLES:
 
-int vect->len
+int vect.len
 ^ The number of items in the heap (read only!)
 
 #####

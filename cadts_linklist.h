@@ -61,7 +61,7 @@ void NAME_iniadd(NAME *llist, STRU val)
 
 ##### VARIABLES:
 
-int vect->len
+int vect.len
 ^ The number of items in the list (read only!)
 
 #####
