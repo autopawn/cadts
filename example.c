@@ -24,9 +24,9 @@ int main(int argc, char const *argv[]){
     for(int i=0;i<10;i++){
         floatvec_endpop(&fvec);
     }
-    for(int i=0;i<fvec.len;i++){
-        // Access by "items" array, this can only be done with vectors.
-        printf("%f ",fvec.items[i]);
+    for(int i=0;i<floatvec_len(&fvec);i++){
+        // Access the item at position i, this can only be done with vectors.
+        printf("%f ",floatvec_get(&fvec,i));
     }
     printf("\n");
     floatvec_free(&fvec);
