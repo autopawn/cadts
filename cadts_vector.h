@@ -21,20 +21,19 @@ void NAME_init(NAME *vect, int size)
 void NAME_free(NAME *vect)
 ^ Liberates the memory requested by the vector.
 
-STRU NAME_get(NAME *vect, int p)
-^ O(1) Returns the item at position p.
-
-void NAME_set(NAME *vect, int p, STRU val)
-^ O(1) Sets the value val for the item at position p.
-
 void NAME_endadd(NAME *vect, STRU stru)
 ^ O(1) Adds an item at the end of the vector. Increasing its length by 1.
 
 STRU NAME_endpop(NAME *vect)
 ^ O(1) Deletes the last item of the vector, returning its value.
 
-int NAME_len(NAME *vect)
-^ O(1) Returns the length of the vector.
+##### VARIABLES:
+
+int vect.len
+^ The number of items in the vector (read only!).
+
+STRU vect.items[k]
+^ Access the struct at position k.
 
 #####
 */
@@ -58,14 +57,6 @@ static void NAME##_free(NAME *vect){\
     free(vect->items);\
 }\
 \
-static STRU NAME##_get(NAME *vect, int p){\
-    return vect->items[p];\
-}\
-\
-static void NAME##_set(NAME *vect, int p, STRU val){\
-    vect->items[p] = val;\
-}\
-\
 static void NAME##_endadd(NAME *vect, STRU stru){\
     if(vect->len==vect->size){\
         vect->size *= 2;\
@@ -80,8 +71,5 @@ static STRU NAME##_endpop(NAME *vect){\
     return vect->items[vect->len];\
 }\
 \
-static int NAME##_len(NAME *vect){\
-    return vect->len;\
-}\
 
 #endif

@@ -59,8 +59,10 @@ void NAME_endadd(NAME *llist, STRU val)
 void NAME_iniadd(NAME *llist, STRU val)
 ^ O(1) Adds an item node at the beginning of the list (doens't change the iterator).
 
-int NAME_len(NAME *llist)
-^ O(1) Returns the length of the list.
+##### VARIABLES:
+
+int llist.len
+^ The number of items in the list (read only!).
 
 #####
 */
@@ -223,9 +225,5 @@ static void NAME##_iniadd(NAME *llist, STRU val){\
     llist->piter = prepiter;\
 }\
 \
-static int NAME##_len(NAME *llist){\
-    return llist->len;\
-}\
-
 
 #endif

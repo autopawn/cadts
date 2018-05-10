@@ -54,13 +54,13 @@ First you have create the space in memory for the ADT instance, you can do this 
 
 Then you have to initialize the ADT, the macro defines the function `[adtname]_init` for this propose. In this case the `[adtname]_init` function requires a pointer to the instance and an initial `size`, which we can left as 0.
 
-You can access the ADT instance trough the functions generated for your ADT, see the comments at the beginning of the corresponding header.
+You can access the ADT instance trough the functions generated for your ADT, see the documentation at the beginning of the corresponding header.
 
 After using an ADT, you have to call the `[adtname]_free` function over it so that the memory that it allocated internally is released.
 
 ### Usage rules
 
-* Never access the ADTs by their members, always by their methods.
+* Never access the ADTs by their members unless they are specified in the `VARIABLES` section of their documentation, also don't modify the members that are **read only**.
 
 * Don't define two ADTs with the same name.
 
