@@ -16,8 +16,8 @@ A vector is just an array that resizes once its capacity is not enough to store 
 
 ##### FUNCTIONS:
 
-void NAME_init(NAME *vect, int size)
-^ Initializes a vector of the given size (values smaller than 1 are set to 1).
+NAME *NAME_init(int size)
+^ Creates a vector of the given size (values smaller than 1 are set to 1).
 
 void NAME_free(NAME *vect)
 ^ Liberates the memory requested by the vector.
@@ -36,10 +36,10 @@ STRU NAME_pop(NAME *vect, int p)
 
 ##### VARIABLES:
 
-int vect.len
+int vect->len
 ^ The number of items in the vector (read only!).
 
-STRU vect.items[k]
+STRU vect->items[k]
 ^ Access the struct at position k.
 
 #####
@@ -53,15 +53,18 @@ typedef struct {\
     STRU *items;\
 } NAME;\
 \
-static void NAME##_init(NAME *vect, int size){\
+static NAME *NAME##_init(int size){\
+    NAME *vect = malloc(sizeof(NAME));\
     vect->len = 0;\
     if(size<1) size = 1;\
     vect->size = size;\
     vect->items = (STRU *) malloc(sizeof(STRU)*vect->size);\
+    return vect;\
 }\
 \
 static void NAME##_free(NAME *vect){\
     free(vect->items);\
+    free(vect);\
 }\
 \
 static void NAME##_endadd(NAME *vect, STRU stru){\

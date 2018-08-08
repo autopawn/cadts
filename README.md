@@ -37,40 +37,28 @@ typedef struct{
 CADTS_VECTOR(foobarvec,foobarpair)
 ```
 
-Note that this doesn't create a `foobarvec`, just defines the `foobarvec` struct and its methods, that's why it is not inside a function.
+Note that this doesn't create an instance of `foobarvec`, just defines the `foobarvec` struct and its "*methods*" (functions really), that's why it never goes inside a function.
 
 ## Using an ADT
 
+First you have create the ADT instance, the macro defines the function `[adtname]_init` for this propose, it returns a pointer to it.
+
 ```c
-intvec myvec;
-intvec_init(&myvec,0);
+intvec *myvec = intvec_init(0);
 //
 // Use myvec ...
+// e.g.:
+//     intvec_endadd(myvec,42);
 //
-intvec_free(&myvec);
+intvec_free(myvec);
 ```
 
-First you have create the space in memory for the ADT instance, you can do this by creating a variable.
-
-Then you have to initialize the ADT, the macro defines the function `[adtname]_init` for this propose. In this case the `[adtname]_init` function requires a pointer to the instance and an initial `size`, which we can left as 0.
-
-You can access the ADT instance trough the functions generated for your ADT, see the documentation at the beginning of the corresponding header.
+You can access the ADT instance trough the "*methods*" generated for your ADT, besides `[adtname]_init` they all request a pointer to this instance as first parameter. For their usage see the documentation at the beginning of the corresponding header.
 
 After using an ADT, you have to call the `[adtname]_free` function over it so that the memory that it allocated internally is released.
 
 ### Usage rules
 
-* Never access the ADTs by their members unless they are specified in the `VARIABLES` section of their documentation, also don't modify the members that are **read only**.
+* **Never** access the ADTs by their members unless they are specified in the `VARIABLES` section of their documentation, also don't modify the members that are **read only**.
 
-* Don't define two ADTs with the same name.
-
-* You can't use the ADTs Before `[adtname]_init` or after `[adtname]_free`.
-
-* Since the ADTs are complex datatypes and they allocate memory on their own, you can't just copy one into another variable like:
-
-    ```c
-    intvec yourvec;
-    yourvec = myvec;
-    ```
-
-    As `yourvec` will hold the same inner references to data than `myvec` and having two ADTs sharing their data **will** lead to **undefined behavior**.
+* **Never** define two ADTs with the same name, this will result in "*methods*" generated with the same name and compilation will fail.

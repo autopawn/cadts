@@ -17,8 +17,8 @@ A_CMP_B is a comparison between a literal "A" and a literal "B", to use the comp
 
 ##### FUNCTIONS:
 
-void NAME_init(NAME *heap, int size)
-^ Initializes a heap of the given size (values smaller than 1 are set to 1).
+NAME *NAME_init(int size)
+^ Creates a heap of the given size (values smaller than 1 are set to 1).
 
 void NAME_free(NAME *heap)
 ^ Liberates the memory requested by the heap.
@@ -34,7 +34,7 @@ void NAME_add(NAME *heap, STRU val)
 
 ##### VARIABLES:
 
-int heap.len
+int heap->len
 ^ The number of items in the heap (read only!).
 
 #####
@@ -48,15 +48,18 @@ typedef struct {\
     STRU *items;\
 } NAME;\
 \
-static void NAME##_init(NAME *heap, int size){\
+static NAME *NAME##_init(int size){\
+    NAME *heap = malloc(sizeof(NAME));\
     heap->len = 0;\
     if(size<1) size = 1;\
     heap->size = size;\
     heap->items = malloc(sizeof(STRU)*heap->size);\
+    return heap;\
 }\
 \
 static void NAME##_free(NAME *heap){\
     free(heap->items);\
+    free(heap);\
 }\
 \
 static STRU NAME##_peek(NAME *heap){\

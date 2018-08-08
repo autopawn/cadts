@@ -23,8 +23,8 @@ NOTE: Don't hold more than 1073741822 keys.
 
 ##### FUNCTIONS:
 
-void NAME_init(NAME *htable)
-^ Initializes a hashtable.
+NAME *NAME_init()
+^ Creates a hashtable.
 
 void NAME_free(NAME *htable)
 ^ Liberates the memory requested by the hashtable.
@@ -37,7 +37,7 @@ int NAME_has(NAME *htable, KEY_STRU key)
 
 ##### VARIABLES:
 
-int htable.len
+int htable->len
 ^ The number of items in the hashtable (read only!).
 
 #####
@@ -59,22 +59,23 @@ struct NAME##_node {\
 };\
 \
 typedef struct {\
-    int n_active_iters;\
+    int n_modifications;\
     int len;\
     int sizei;\
     NAME##_node **slots;\
 } NAME;\
 \
-void NAME_init(NAME *htable){\
-    htable->n_active_iters = 0;\
+NAME *NAME##_init(){\
+    NAME *htable = malloc(sizeof(NAME));\
+    htable->n_modifications = 0;\
     htable->len = 0;\
     htable->sizei = 0;\
     htable->slots = malloc(sizeof(NAME##_node *)*PRIMELESSP2[htable->sizei]);\
     for(int i=0;i<PRIMELESSP2[htable->sizei];i++) htable->slots[i] = NULL;\
+    return htable;\
 }\
 \
-void NAME_free(NAME *htable){\
-    assert(htable->n_active_iters==0);\
+void NAME##_free(NAME *htable){\
     for(int i=0;i<PRIMELESSP2[htable->sizei];i++){\
         NAME##_node *ptr = htable->slots[i];\
         while(ptr!=NULL){\
@@ -83,31 +84,10 @@ void NAME_free(NAME *htable){\
             free(ptrc);\
         }\
     }\
+    free(htable);\
 }\
 \
-void NAME_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
-    htable->len += 1;\
-    /* Realloc all the nodes in more space */ \
-    if(htable->len>=PRIMELESSP2[htable->sizei]/2){\
-        NAME##_node **neo_slots = malloc(sizeof(NAME##_node *)*PRIMELESSP2[htable->sizei+1]);\
-        for(int i=0;i<PRIMELESSP2[htable->sizei+1];i++) neo_slots[i] = NULL;\
-        for(int i=0;i<PRIMELESSP2[htable->sizei];i++){\
-            NAME##_node *ptr = htable->slots[i];\
-            while(ptr!=NULL){\
-                NAME##_node *ptrc = ptr;\
-                ptr = ptr->next;\
-                /* Add this node in the neo_slots */ \
-                KEY_STRU A = ptrc->key;\
-                unsigned int hash = ((unsigned int)(HASH_A));\
-                unsigned int slot = hash%PRIMELESSP2[htable->sizei+1];\
-                ptrc->next = neo_slots[slot];\
-                neo_slots[slot] = ptrc;\
-            }\
-        }\
-        free(htable->slots);\
-        htable->slots = neo_slots;\
-        htable->sizei += 1;\
-    }\
+void NAME##_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
@@ -122,6 +102,32 @@ void NAME_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
             ptrc->val = val;\
             return;\
         }\
+    }\
+    /* Update counters */ \
+    htable->n_modifications += 1;\
+    htable->len += 1;\
+    /* Realloc all the nodes in more space */ \
+    if(htable->len>=PRIMELESSP2[htable->sizei]/2){\
+        NAME##_node **neo_slots = malloc(sizeof(NAME##_node *)*PRIMELESSP2[htable->sizei+1]);\
+        for(int i=0;i<PRIMELESSP2[htable->sizei+1];i++) neo_slots[i] = NULL;\
+        for(int i=0;i<PRIMELESSP2[htable->sizei];i++){\
+            NAME##_node *ptr = htable->slots[i];\
+            while(ptr!=NULL){\
+                NAME##_node *ptrc = ptr;\
+                ptr = ptr->next;\
+                /* Add this node in the neo_slots */ \
+                KEY_STRU A = ptrc->key;\
+                unsigned int hash = ((unsigned int)(HASH_A));\
+                unsigned int cslot = hash%PRIMELESSP2[htable->sizei+1];\
+                ptrc->next = neo_slots[cslot];\
+                neo_slots[cslot] = ptrc;\
+            }\
+        }\
+        free(htable->slots);\
+        htable->slots = neo_slots;\
+        htable->sizei += 1;\
+        /* Recompute slot of the hash */ \
+        slot = hash%PRIMELESSP2[htable->sizei];\
     }\
     /* Create and add new node */ \
     NAME##_node *node = malloc(sizeof(NAME##_node));\
