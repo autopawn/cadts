@@ -36,9 +36,32 @@ void NAME_add(NAME *htable, KEY_STRU key, VAL_STRU val)
 int NAME_has(NAME *htable, KEY_STRU key)
 ^ O(1) Checks if a given key exists.
 
+VAL_STRU NAME_get(NAME *htable, KEY_STRU key)
+^ O(1) Gets the value of a given key.
+
 VAL_STRU NAME_pop(NAME *htable, KEY_STRU key)
 ^ O(1) Deletes the given key, returning its associated value.
 
+##### ITERATOR FUNCTIONS:
+
+Iterators are designed for traversing the whole hashtable in O(n).
+
+NOTE: Iterators shouldn't be used after their hashtable is freed.
+
+NAME_iter NAME_begin(NAME *htable)
+^ Returns an iterator for the hashtable.
+
+int NAME_iter_done(NAME_iter *iter)
+^ Checks if the iterator has finish.
+
+void NAME_iter_next(NAME_iter *iter)
+^ Moves the iterator forward.
+
+KEY_STRU NAME_iter_key(NAME_iter *iter)
+^ Retrieves the key at the current iterator.
+
+VAL_STRU NAME_iter_val(NAME_iter *iter)
+^ Retrieves the value at the current iterator.
 
 ##### VARIABLES:
 
@@ -159,10 +182,29 @@ int NAME##_has(NAME *htable, KEY_STRU key){\
     return 0;\
 }\
 \
+VAL_STRU NAME##_get(NAME *htable, KEY_STRU key){\
+    /* Check for presence of the current key */ \
+    KEY_STRU A = key;\
+    unsigned int hash = ((unsigned int)(HASH_A));\
+    unsigned int slot = hash%PRIMELESSP2[htable->sizei];\
+    NAME##_node *ptr = htable->slots[slot];\
+    while(ptr!=NULL){\
+        NAME##_node *ptrc = ptr;\
+        ptr = ptr->next;\
+        KEY_STRU B = ptrc->key;\
+        /* Key was found */ \
+        if(A_EQL_B){\
+            return ptrc->val;\
+        }\
+    }\
+    /* Key was not found and should have been, return 0-inited struct for deterministic behaviour if assertion is ignored. */ \
+    assert(!"Key exists.");\
+    VAL_STRU dummy;\
+    memset(&dummy,0,sizeof(VAL_STRU));\
+    return dummy;\
+}\
+\
 VAL_STRU NAME##_pop(NAME *htable, KEY_STRU key){\
-    /* Update counters */ \
-    htable->n_modifications += 1;\
-    htable->len -= 1;\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
@@ -173,20 +215,106 @@ VAL_STRU NAME##_pop(NAME *htable, KEY_STRU key){\
         KEY_STRU B = ptrc->key;\
         /* If key was found */ \
         if(A_EQL_B){\
+            /* Update counters */ \
+            htable->n_modifications += 1;\
+            htable->len -= 1;\
             /* Make previous pointer point to the next node */ \
             *preptr = ptrc->next;\
             VAL_STRU val = ptrc->val;\
             free(ptrc);\
+            /* Realloc all the nodes in less space */ \
+            if(htable->len<PRIMELESSP2[htable->sizei]/4){\
+                NAME##_node **neo_slots = malloc(sizeof(NAME##_node *)*PRIMELESSP2[htable->sizei-1]);\
+                for(int i=0;i<PRIMELESSP2[htable->sizei-1];i++) neo_slots[i] = NULL;\
+                for(int i=0;i<PRIMELESSP2[htable->sizei];i++){\
+                    NAME##_node *ptr = htable->slots[i];\
+                    while(ptr!=NULL){\
+                        NAME##_node *ptrc = ptr;\
+                        ptr = ptr->next;\
+                        /* Add this node in the neo_slots */ \
+                        KEY_STRU A = ptrc->key;\
+                        unsigned int hash = ((unsigned int)(HASH_A));\
+                        unsigned int cslot = hash%PRIMELESSP2[htable->sizei-1];\
+                        ptrc->next = neo_slots[cslot];\
+                        neo_slots[cslot] = ptrc;\
+                    }\
+                }\
+                free(htable->slots);\
+                htable->slots = neo_slots;\
+                htable->sizei -= 1;\
+            }\
+            /* Return val */ \
             return val;\
         }\
         /* Advance pre pointer */ \
         preptr = &ptrc->next;\
     }\
-    /* Key was not found and should have been. */ \
+    /* Key was not found and should have been, return 0-inited struct for deterministic behaviour if assertion is ignored. */ \
     assert(!"Key exists.");\
     VAL_STRU dummy;\
     memset(&dummy,0,sizeof(VAL_STRU));\
     return dummy;\
 }\
+\
+typedef struct {\
+    NAME *origin;\
+    int n_modifications;\
+    int slot;\
+    NAME##_node *ptrc;\
+} NAME##_iter;\
+\
+NAME##_iter NAME##_begin(NAME *htable){\
+    NAME##_iter iter;\
+    iter.origin = htable;\
+    iter.n_modifications = htable->n_modifications;\
+    iter.slot = PRIMELESSP2[iter.origin->sizei];\
+    for(int i=0;i<PRIMELESSP2[iter.origin->sizei];i++){\
+        if(iter.origin->slots[i]!=NULL){\
+            iter.ptrc = iter.origin->slots[i];\
+            iter.slot = i;\
+            break;\
+        }\
+    }\
+    return iter;\
+}\
+\
+void NAME##_iter_next(NAME##_iter *iter){\
+    if(iter->n_modifications!=iter->origin->n_modifications){\
+        assert(!"Hashtable wasn't modified.");\
+    }\
+    /* Check if iterator is already done */ \
+    if(iter->slot==PRIMELESSP2[iter->origin->sizei]) return;\
+    /* Move iterator forward until reach end or finding another node */ \
+    iter->ptrc = iter->ptrc->next;\
+    while(iter->ptrc==NULL){\
+        iter->slot += 1;\
+        if(iter->slot==PRIMELESSP2[iter->origin->sizei]) break; \
+        iter->ptrc = iter->origin->slots[iter->slot];\
+    }\
+}\
+\
+int NAME##_iter_done(NAME##_iter *iter){\
+    if(iter->n_modifications!=iter->origin->n_modifications){\
+        assert(!"Hashtable wasn't modified.");\
+    }\
+    return iter->slot==PRIMELESSP2[iter->origin->sizei];\
+}\
+\
+KEY_STRU NAME##_iter_key(NAME##_iter *iter){\
+    if(iter->n_modifications!=iter->origin->n_modifications){\
+        assert(!"Hashtable wasn't modified.");\
+    }\
+    assert(!NAME##_iter_done(iter));\
+    return iter->ptrc->key;\
+}\
+\
+VAL_STRU NAME##_iter_val(NAME##_iter *iter){\
+    if(iter->n_modifications!=iter->origin->n_modifications){\
+        assert(!"Hashtable wasn't modified.");\
+    }\
+    assert(!NAME##_iter_done(iter));\
+    return iter->ptrc->val;\
+}\
+\
 
 #endif

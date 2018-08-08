@@ -56,19 +56,37 @@ int main(int argc, char const *argv[]){
     //
     printf("HASHTABLE:\n");
     loloctable *htable = loloctable_init();
-    loloctable_add(htable,400000,'B');
-    loloctable_add(htable,400002,'O');
-    loloctable_add(htable,400003,'O');
-    loloctable_add(htable,400004,'K');
-    loloctable_add(htable,400005,' ');
-    loloctable_add(htable,400006,'K');
-    loloctable_add(htable,400007,'E');
-    loloctable_add(htable,400008,'E');
-    loloctable_add(htable,400009,'P');
-    loloctable_add(htable,400010,'E');
-    loloctable_add(htable,400011,'R');
-    char val = loloctable_pop(htable,400004);
-    printf("poped 400004: '%c'\n",val);
+    loloctable_add(htable,600000,'B');
+    loloctable_add(htable,600002,'O');
+    loloctable_add(htable,600003,'O');
+    loloctable_add(htable,600004,'K');
+    loloctable_add(htable,600005,' ');
+    loloctable_add(htable,600006,'K');
+    loloctable_add(htable,600007,'E');
+    loloctable_add(htable,600008,'E');
+    loloctable_add(htable,600009,'P');
+    loloctable_add(htable,600010,'E');
+    loloctable_add(htable,600011,'R');
+    char val = loloctable_pop(htable,600004);
+    printf("poped: '%c'\n",val);
+    // Test iterator:
+    for(loloctable_iter it=loloctable_begin(htable); !loloctable_iter_done(&it); loloctable_iter_next(&it)){
+        printf("KEY '%llu' VAL '%c'\n",loloctable_iter_key(&it),loloctable_iter_val(&it));
+    }
+    // Delete something
+    loloctable_pop(htable,600002);
+    loloctable_pop(htable,600005);
+    loloctable_pop(htable,600006);
+    loloctable_pop(htable,600007);
+    loloctable_pop(htable,600009);
+    loloctable_pop(htable,600010);
+    printf("poped several\n");
+    // Iterate again:
+    for(loloctable_iter it=loloctable_begin(htable); !loloctable_iter_done(&it); loloctable_iter_next(&it)){
+        printf("KEY '%llu' VAL '%c'\n",loloctable_iter_key(&it),loloctable_iter_val(&it));
+    }
+
+    printf("poped 600004: '%c'\n",val);
     loloctable_free(htable);
     //
     //
