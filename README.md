@@ -74,5 +74,3 @@ After using an ADT, you have to call the `[adtname]_free` function over it so th
     ```
 
     As `yourvec` will hold the same inner references to data than `myvec` and having two ADTs sharing their data **will** lead to **undefined behavior**.
-
-* ADT functions doesn't check for incorrect arguments (accessing a position that doesn't exists on an array), that's also **undefined behavior**.

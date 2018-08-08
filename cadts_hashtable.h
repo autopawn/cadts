@@ -19,6 +19,7 @@ HASH_A is an expresion that uses a literal "A" (a key) of type KEY_STRU, and giv
 
 NOTE: Its your responsability that if A_EQL_B implies that x==y replacing A by x and B by y, then HASH_A replacing A by x must be equal to HASH_A replacing A by y.
 
+NOTE: Don't hold more than 1073741822 keys.
 
 ##### FUNCTIONS:
 
@@ -45,7 +46,7 @@ int htable.len
 static const unsigned int PRIMELESSP2[] = {
     3,7,13,31,61,127,251,509,1021,2039,4093,8191,16381,32749,65521,131071,
     262139,524287,1048573,2097143,4194301,8388593,16777213,33554393,67108859,
-    134217689,268435399,536870909,1073741789,2147483647,4294967291};
+    134217689,268435399,536870909,1073741789,2147483647};
 
 
 #define CADTS_HASHTABLE(NAME,KEY_STRU,VAL_STRU,A_EQL_B,HASH_A) \
