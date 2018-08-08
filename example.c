@@ -2,6 +2,7 @@
 
 #include "cadts_vector.h"
 #include "cadts_heap.h"
+#include "cadts_hashtable.h"
 
 // Create floatvec, a struct that is a vector of floats:
 CADTS_VECTOR(floatvec,float)
@@ -9,6 +10,11 @@ CADTS_VECTOR(floatvec,float)
 // Create intheap, a struct that is a heap of ints
 // the third argument should be a comparison of "A" and "B", which ints in this case.
 CADTS_HEAP(intheap,int,A<B)
+
+// Create lolochartable, a struct with unsigned long long's as keys and chars as values
+CADTS_HASHTABLE(lolochartable,unsigned long long,char,A==B,(A>>32)^(A))
+
+// the third argument should be a comparison of "A" and "B", which ints in this case.
 
 int main(int argc, char const *argv[]){
     printf("VECTOR:\n");
