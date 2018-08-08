@@ -160,6 +160,9 @@ int NAME##_has(NAME *htable, KEY_STRU key){\
 }\
 \
 VAL_STRU NAME##_pop(NAME *htable, KEY_STRU key){\
+    /* Update counters */ \
+    htable->n_modifications += 1;\
+    htable->len -= 1;\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
