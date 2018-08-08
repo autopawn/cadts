@@ -28,11 +28,11 @@ void NAME_endadd(NAME *vect, STRU stru)
 STRU NAME_endpop(NAME *vect)
 ^ O(1) Deletes the last item of the vector, returning its value.
 
-STRU NAME_pop(NAME *vect, int p)
-^ O(n-p) Deletes the item on position p, returning its value.
-
 void NAME_add(NAME *vect, int p, STRU stru)
 ^ O(n-p) Adds an item at position p.
+
+STRU NAME_pop(NAME *vect, int p)
+^ O(n-p) Deletes the item on position p, returning its value.
 
 ##### VARIABLES:
 
@@ -79,16 +79,6 @@ static STRU NAME##_endpop(NAME *vect){\
     return vect->items[vect->len];\
 }\
 \
-static STRU NAME##_pop(NAME *vect, int p){\
-    assert(p>=0 && p<vect->len);\
-    STRU ret = vect->items[p];\
-    vect->len -= 1;\
-    for(int i=p; i<vect->len; i++){\
-        vect->items[i] = vect->items[i+1];\
-    }\
-    return ret;\
-}\
-\
 static void NAME##_add(NAME *vect, int p, STRU stru){\
     assert(p>=0 && p<=vect->len);\
     if(vect->len==vect->size){\
@@ -100,6 +90,16 @@ static void NAME##_add(NAME *vect, int p, STRU stru){\
     }\
     vect->len += 1;\
     vect->items[p] = stru;\
+}\
+\
+static STRU NAME##_pop(NAME *vect, int p){\
+    assert(p>=0 && p<vect->len);\
+    STRU ret = vect->items[p];\
+    vect->len -= 1;\
+    for(int i=p; i<vect->len; i++){\
+        vect->items[i] = vect->items[i+1];\
+    }\
+    return ret;\
 }\
 \
 
