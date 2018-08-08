@@ -8,15 +8,18 @@
 CADTS_VECTOR(floatvec,float)
 
 // Create intheap, a struct that is a heap of ints
-// the third argument should be a comparison of "A" and "B", which ints in this case.
+// the third argument should be a comparison of "A" and "B", which are ints in this case.
 CADTS_HEAP(intheap,int,A<B)
 
-// Create lolochartable, a struct with unsigned long long's as keys and chars as values
-CADTS_HASHTABLE(lolochartable,unsigned long long,char,A==B,(A>>32)^(A))
+// Create loloctable, a struct with unsigned long long's as keys and chars as values
+// the third argument checks for equality between "A" and "B".
+// the fourth argument hashs the key "A".
+CADTS_HASHTABLE(loloctable,unsigned long long,char,A==B,(A>>32)^(A))
 
-// the third argument should be a comparison of "A" and "B", which ints in this case.
 
 int main(int argc, char const *argv[]){
+    //
+    //
     printf("VECTOR:\n");
     floatvec *fvec = floatvec_init(0);
     for(int i=0;i<20;i++){
@@ -49,6 +52,25 @@ int main(int argc, char const *argv[]){
         printf("heap lowest: %d\n",intheap_poll(heap));
     }
     intheap_free(heap);
-
+    //
+    //
+    printf("HASHTABLE:\n");
+    loloctable *htable = loloctable_init();
+    loloctable_add(htable,400000,'B');
+    loloctable_add(htable,400002,'O');
+    loloctable_add(htable,400003,'O');
+    loloctable_add(htable,400004,'K');
+    loloctable_add(htable,400005,' ');
+    loloctable_add(htable,400006,'K');
+    loloctable_add(htable,400007,'E');
+    loloctable_add(htable,400008,'E');
+    loloctable_add(htable,400009,'P');
+    loloctable_add(htable,400010,'E');
+    loloctable_add(htable,400011,'R');
+    char val = loloctable_pop(htable,400004);
+    printf("poped 400004: '%c'\n",val);
+    loloctable_free(htable);
+    //
+    //
     return 0;
 }

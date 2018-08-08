@@ -4,6 +4,7 @@
 #pragma GCC diagnostic ignored "-Wunused-function"
 
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 /*
@@ -34,6 +35,10 @@ void NAME_add(NAME *htable, KEY_STRU key, VAL_STRU val)
 
 int NAME_has(NAME *htable, KEY_STRU key)
 ^ O(1) Checks if a given key exists.
+
+VAL_STRU NAME_pop(NAME *htable, KEY_STRU key)
+^ O(1) Deletes the given key, returning its associated value.
+
 
 ##### VARIABLES:
 
@@ -84,6 +89,7 @@ void NAME##_free(NAME *htable){\
             free(ptrc);\
         }\
     }\
+    free(htable->slots);\
     free(htable);\
 }\
 \
@@ -137,7 +143,7 @@ void NAME##_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
     htable->slots[slot] = node;\
 }\
 \
-int NAME_has(NAME *htable, KEY_STRU key){\
+int NAME##_has(NAME *htable, KEY_STRU key){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
@@ -153,5 +159,31 @@ int NAME_has(NAME *htable, KEY_STRU key){\
     return 0;\
 }\
 \
+VAL_STRU NAME##_pop(NAME *htable, KEY_STRU key){\
+    /* Check for presence of the current key */ \
+    KEY_STRU A = key;\
+    unsigned int hash = ((unsigned int)(HASH_A));\
+    unsigned int slot = hash%PRIMELESSP2[htable->sizei];\
+    NAME##_node **preptr = &htable->slots[slot];\
+    while(*preptr!=NULL){\
+        NAME##_node *ptrc = *preptr;\
+        KEY_STRU B = ptrc->key;\
+        /* If key was found */ \
+        if(A_EQL_B){\
+            /* Make previous pointer point to the next node */ \
+            *preptr = ptrc->next;\
+            VAL_STRU val = ptrc->val;\
+            free(ptrc);\
+            return val;\
+        }\
+        /* Advance pre pointer */ \
+        preptr = &ptrc->next;\
+    }\
+    /* Key was not found and should have been. */ \
+    assert(!"Key exists.");\
+    VAL_STRU dummy;\
+    memset(&dummy,0,sizeof(VAL_STRU));\
+    return dummy;\
+}\
 
 #endif
