@@ -2,7 +2,6 @@
 
 #include "cadts_vector.h"
 #include "cadts_heap.h"
-#include "cadts_linklist.h"
 
 // Create floatvec, a struct that is a vector of floats:
 CADTS_VECTOR(floatvec,float)
@@ -10,9 +9,6 @@ CADTS_VECTOR(floatvec,float)
 // Create intheap, a struct that is a heap of ints
 // the third argument should be a comparison of "A" and "B", which ints in this case.
 CADTS_HEAP(intheap,int,A<B)
-
-// Create intlist, a struct that is a linked list of chars.
-CADTS_LINKLIST(intlist,int)
 
 int main(int argc, char const *argv[]){
     printf("VECTOR:\n");
@@ -49,34 +45,6 @@ int main(int argc, char const *argv[]){
         printf("heap lowest: %d\n",intheap_poll(&heap));
     }
     intheap_free(&heap);
-    //
-    printf("LINKEDLIST:\n");
-    intlist clink;
-    intlist_init(&clink,0);
-    // Add values
-    for(int i=1;i<=10;i++){
-        intlist_endadd(&clink,i);
-        intlist_iniadd(&clink,-i);
-    }
-    // Delete 3 consecutive values:
-    intlist_itini(&clink);
-    for(int k=0;k<5;k++) intlist_itnext(&clink);
-    for(int k=0;k<3;k++){
-        // Delete 3 values after it
-        intlist_itpop(&clink);
-    }
-    // Add some more values
-    for(int i=1;i<=5;i++){
-        intlist_endadd(&clink,100+i);
-    }
-    // Pop first value
-    int fsti = intlist_inipop(&clink);
-    printf("first: %d\n",fsti);
-    for(intlist_itini(&clink);intlist_itvalid(&clink);intlist_itnext(&clink)){
-        printf("%d ",intlist_itget(&clink));
-    }
-    printf("\n");
-    intlist_free(&clink);
 
     return 0;
 }

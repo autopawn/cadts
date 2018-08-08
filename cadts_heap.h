@@ -3,8 +3,8 @@
 
 #pragma GCC diagnostic ignored "-Wunused-function"
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 /*
 ##### DEFINITION:
@@ -60,18 +60,11 @@ static void NAME##_free(NAME *heap){\
 }\
 \
 static STRU NAME##_peek(NAME *heap){\
-    if(heap->len<=0){\
-        fprintf(stderr,"ERROR: peek on empty heap!\n");\
-        exit(1);\
-    }\
+    assert(heap->len>0);\
     return heap->items[0];\
 }\
 static STRU NAME##_poll(NAME *heap){\
-    if(heap->len<=0){\
-        fprintf(stderr,"ERROR: pool on empty heap!\n");\
-        exit(1);\
-    }\
-    /**/\
+    assert(heap->len>0);\
     STRU ret = heap->items[0];\
     heap->len -= 1;\
     heap->items[0] = heap->items[heap->len];\

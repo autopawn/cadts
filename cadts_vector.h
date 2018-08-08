@@ -4,6 +4,7 @@
 #pragma GCC diagnostic ignored "-Wunused-function"
 
 #include <stdlib.h>
+#include <assert.h>
 
 /*
 ##### DEFINITION:
@@ -26,6 +27,12 @@ void NAME_endadd(NAME *vect, STRU stru)
 
 STRU NAME_endpop(NAME *vect)
 ^ O(1) Deletes the last item of the vector, returning its value.
+
+STRU NAME_pop(NAME *vect, int p)
+^ O(n-p) Deletes the item on position p, returning its value.
+
+void NAME_add(NAME *vect, int p, STRU stru)
+^ O(n-p) Adds an item at position p.
 
 ##### VARIABLES:
 
@@ -50,7 +57,7 @@ static void NAME##_init(NAME *vect, int size){\
     vect->len = 0;\
     if(size<1) size = 1;\
     vect->size = size;\
-    vect->items = malloc(sizeof(STRU)*vect->size);\
+    vect->items = (STRU *) malloc(sizeof(STRU)*vect->size);\
 }\
 \
 static void NAME##_free(NAME *vect){\
@@ -60,15 +67,39 @@ static void NAME##_free(NAME *vect){\
 static void NAME##_endadd(NAME *vect, STRU stru){\
     if(vect->len==vect->size){\
         vect->size *= 2;\
-        vect->items = realloc(vect->items,sizeof(STRU)*vect->size);\
+        vect->items = (STRU *) realloc(vect->items,sizeof(STRU)*vect->size);\
     }\
     vect->items[vect->len] = stru;\
     vect->len += 1;\
 }\
 \
 static STRU NAME##_endpop(NAME *vect){\
+    assert(vect->len>0);\
     vect->len -= 1;\
     return vect->items[vect->len];\
+}\
+\
+static STRU NAME##_pop(NAME *vect, int p){\
+    assert(p>=0 && p<vect->len);\
+    STRU ret = vect->items[p];\
+    vect->len -= 1;\
+    for(int i=p; i<vect->len; i++){\
+        vect->items[i] = vect->items[i+1];\
+    }\
+    return ret;\
+}\
+\
+static void NAME##_add(NAME *vect, int p, STRU stru){\
+    assert(p>=0 && p<=vect->len);\
+    if(vect->len==vect->size){\
+        vect->size *= 2;\
+        vect->items = (STRU *) realloc(vect->items,sizeof(STRU)*vect->size);\
+    }\
+    for(int i=vect->len-1; p<=i; i--){\
+        vect->items[i+1] = vect->items[i];\
+    }\
+    vect->len += 1;\
+    vect->items[p] = stru;\
 }\
 \
 
