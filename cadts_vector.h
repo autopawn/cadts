@@ -40,6 +40,15 @@ int NAME_len(NAME *vect)
 STRU NAME_item(NAME *vect, int p)
 ^ O(1) Returns the item at the position p.
 
+STRU NAME_sort(NAME *vect, int (*sortCallback)(const STRU *a, const STRU *b))
+^ O(n log n) Sorts the items according to the sort callback. 
+  The callback must return must return an integer less than, equal to, or
+    greater than zero if the first argument is considered to be respectively
+    less than, equal to, or greater than the second.
+  Uses qsort as the sorting algorithm. 
+  See `man qsort` for more info.
+
+
 ##### VARIABLES:
 
 STRU vect->items[k]
@@ -115,6 +124,12 @@ static inline int NAME##_len(NAME *vect){\
 static STRU NAME##_item(NAME *vect, int p){\
     assert(p>=0 && p<vect->len);\
     return vect->items[p];\
+}\
+\
+static void NAME##_sort(NAME *vect, int (*sortCallback)(const STRU*, const STRU*)){\
+    assert(vect->len>0);\
+    int (*callback)(const void*, const void*) =  (int (*)(const void*, const void*) ) sortCallback;\
+    qsort(vect->items, vect->len, sizeof(STRU), callback);\
 }\
 \
 
