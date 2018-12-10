@@ -34,6 +34,12 @@ void NAME_add(NAME *vect, int p, STRU stru)
 STRU NAME_pop(NAME *vect, int p)
 ^ O(n-p) Deletes the item on position p, returning its value.
 
+int NAME_getLength(NAME *vect)
+^ O(1) Returns the number of items in the vector.
+
+STRU NAME_getItem(NAME *vect, int p)
+^ O(1) Returns the item at the position p.
+
 ##### VARIABLES:
 
 int vect->len
@@ -103,6 +109,15 @@ static STRU NAME##_pop(NAME *vect, int p){\
         vect->items[i] = vect->items[i+1];\
     }\
     return ret;\
+}\
+\
+static inline int NAME##_getLength(NAME *vect){\
+    return vect->len;\
+}\
+\
+static STRU NAME##_getItem(NAME *vect, int p){\
+    assert(p>=0 && p<vect->len);\
+    return vect->items[p];\
 }\
 \
 
