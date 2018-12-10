@@ -34,6 +34,14 @@ void NAME_add(NAME *vect, int p, STRU stru)
 STRU NAME_pop(NAME *vect, int p)
 ^ O(n-p) Deletes the item on position p, returning its value.
 
+STRU NAME_sort(NAME *vect, int (*sortCallback)(const STRU *a, const STRU *b))
+^ O(n log n) Sorts the items according to the sort callback. 
+  The callback must return must return an integer less than, equal to, or
+    greater than zero if the first argument is considered to be respectively
+    less than, equal to, or greater than the second.
+  Uses qsort as the sorting algorithm. 
+  See `man qsort` for more info.
+
 ##### VARIABLES:
 
 int vect->len
@@ -103,6 +111,12 @@ static STRU NAME##_pop(NAME *vect, int p){\
         vect->items[i] = vect->items[i+1];\
     }\
     return ret;\
+}\
+\
+static void NAME##_sort(NAME *vect, int (*sortCallback)(const STRU*, const STRU*)){\
+    assert(vect->len>0);\
+    int (*callback)(const void*, const void*) =  (int (*)(const void*, const void*) ) sortCallback;\
+    qsort(vect->items, vect->len, sizeof(STRU), callback);\
 }\
 \
 
