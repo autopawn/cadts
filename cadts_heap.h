@@ -32,13 +32,12 @@ STRU NAME_poll(NAME *heap)
 void NAME_add(NAME *heap, STRU val)
 ^ O(logn) Adds an item to the heap.
 
-int NAME_getLength(NAME *heap)
+int NAME_len(NAME *heap)
 ^ O(1) Returns the number of items in the heap.
 
 ##### VARIABLES:
 
-int heap->len
-^ The number of items in the heap (read only!).
+-- NONE --
 
 #####
 */
@@ -123,7 +122,7 @@ static void NAME##_add(NAME *heap, STRU val){\
     }\
 }\
 \
-static inline int NAME##_getLength(NAME *heap){\
+static inline int NAME##_len(NAME *heap){\
     return heap->len;\
 }\
 \
