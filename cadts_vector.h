@@ -34,6 +34,12 @@ void NAME_add(NAME *vect, int p, STRU stru)
 STRU NAME_pop(NAME *vect, int p)
 ^ O(n-p) Deletes the item on position p, returning its value.
 
+int NAME_len(NAME *vect)
+^ O(1) Returns the number of items in the vector.
+
+STRU NAME_item(NAME *vect, int p)
+^ O(1) Returns the item at the position p.
+
 STRU NAME_sort(NAME *vect, int (*sortCallback)(const STRU *a, const STRU *b))
 ^ O(n log n) Sorts the items according to the sort callback. 
   The callback must return must return an integer less than, equal to, or
@@ -42,10 +48,8 @@ STRU NAME_sort(NAME *vect, int (*sortCallback)(const STRU *a, const STRU *b))
   Uses qsort as the sorting algorithm. 
   See `man qsort` for more info.
 
-##### VARIABLES:
 
-int vect->len
-^ The number of items in the vector (read only!).
+##### VARIABLES:
 
 STRU vect->items[k]
 ^ Access the struct at position k.
@@ -111,6 +115,15 @@ static STRU NAME##_pop(NAME *vect, int p){\
         vect->items[i] = vect->items[i+1];\
     }\
     return ret;\
+}\
+\
+static inline int NAME##_len(NAME *vect){\
+    return vect->len;\
+}\
+\
+static STRU NAME##_item(NAME *vect, int p){\
+    assert(p>=0 && p<vect->len);\
+    return vect->items[p];\
 }\
 \
 static void NAME##_sort(NAME *vect, int (*sortCallback)(const STRU*, const STRU*)){\

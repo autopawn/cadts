@@ -63,10 +63,12 @@ KEY_STRU NAME_iter_key(NAME_iter *iter)
 VAL_STRU NAME_iter_val(NAME_iter *iter)
 ^ Retrieves the value at the current iterator.
 
+int NAME_len(NAME *htable)
+^ O(1) Returns the number of items in the hashtable.
+
 ##### VARIABLES:
 
-int htable->len
-^ The number of items in the hashtable (read only!).
+-- NONE --
 
 #####
 */
@@ -314,6 +316,10 @@ VAL_STRU NAME##_iter_val(NAME##_iter *iter){\
     }\
     assert(!NAME##_iter_done(iter));\
     return iter->ptrc->val;\
+}\
+\
+static inline int NAME##_len(NAME *htable){\
+    return htable->len;\
 }\
 \
 
