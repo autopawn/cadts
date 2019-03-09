@@ -26,7 +26,10 @@ void NAME_endadd(NAME *vect, STRU stru)
 ^ O(1) Adds an item at the end of the vector. Increasing its length by 1.
 
 STRU NAME_endpop(NAME *vect)
-^ O(1) Deletes the last item of the vector, returning its value.
+^ O(1) Removes the last item from the vector, returning its value.
+
+STRU NAME_endtop(NAME *vect)
+^ O(1) Returns the last item of the vector.
 
 void NAME_add(NAME *vect, int p, STRU stru)
 ^ O(n-p) Adds an item at position p.
@@ -83,6 +86,11 @@ static STRU NAME##_endpop(NAME *vect){\
     assert(vect->len>0);\
     vect->len -= 1;\
     return vect->items[vect->len];\
+}\
+\
+static STRU NAME##_endtop(NAME *vect){\
+    assert(vect->len>0);\
+    return vect->items[vect->len - 1];\
 }\
 \
 static void NAME##_add(NAME *vect, int p, STRU stru){\
