@@ -3,6 +3,7 @@
 #include "cadts_vector.h"
 #include "cadts_heap.h"
 #include "cadts_hashtable.h"
+#include "cadts_queue.h"
 
 // Create floatvec, a struct that is a vector of floats:
 CADTS_VECTOR(floatvec,float)
@@ -16,6 +17,8 @@ CADTS_HEAP(intheap,int,A<B)
 // the fourth argument hashs the key "A".
 CADTS_HASHTABLE(loloctable,unsigned long long,char,A==B,(A>>32)^(A))
 
+// Create longqueue, a struct that is a queue of longs:
+CADTS_QUEUE(longqueue, long)
 
 int cmp_floats(const void *a, const void *b){
     return (*(float*)a-*(float*)b);
@@ -104,6 +107,24 @@ int main(int argc, char const *argv[]){
 
     printf("poped 600004: '%c'\n",val);
     loloctable_free(htable);
+    //
+    printf("QUEUE:\n");
+    longqueue *lque = longqueue_init(0);
+    for(long i=0;i<20;i++){
+        longqueue_push(lque,i);
+    }
+    for(int i=0;i<10;i++){
+        longqueue_pop(lque);
+    }
+    // Print next element
+    printf("%li\n", longqueue_front(lque));
+    // Print last element
+    printf("%li\n", longqueue_back(lque));
+    // Print queue
+    for(int i=longqueue_len(lque);i>=1;--i){
+        printf("%li ", longqueue_pop(lque));
+    }
+    printf("\n");
     //
     //
     return 0;
