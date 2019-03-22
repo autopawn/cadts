@@ -9,7 +9,9 @@
 /*
 ##### DEFINITION:
 
-A queue is just an array that keep track of its first and last element, resizing accordingly.
+A queue is a data strictire where elements can be added from one side and retrieved from the other.
+
+It's implemented as an array that keeps track of its first and last element, and resizes as needed.
 
 #define CADTS_QUEUE(NAME,STRU)
 ^ Where NAME is the name that the ADT will get and STRU is the datatype of its items.
@@ -79,6 +81,8 @@ static void NAME##_push(NAME *queue, STRU stru){\
         }\
         free(queue->items);\
         queue->items = aux;\
+        queue->last = queue->len-1;\
+        queue->first = 0;\
     }\
     queue->len += 1;\
     queue->last = ((queue->last+1)%queue->size);\
