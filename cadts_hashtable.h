@@ -95,18 +95,18 @@ typedef struct {\
     NAME##_node **slots;\
 } NAME;\
 \
-NAME *NAME##_init(){\
+static NAME *NAME##_init(){\
     NAME *htable = malloc(sizeof(NAME));\
     htable->n_modifications = 0;\
     htable->len = 0;\
     htable->sizei = 0;\
     htable->slots = malloc(sizeof(NAME##_node *)*PRIMELESSP2[htable->sizei]);\
-    for(int i=0;i<PRIMELESSP2[htable->sizei];i++) htable->slots[i] = NULL;\
+    for(unsigned int i=0;i<PRIMELESSP2[htable->sizei];i++) htable->slots[i] = NULL;\
     return htable;\
 }\
 \
-void NAME##_free(NAME *htable){\
-    for(int i=0;i<PRIMELESSP2[htable->sizei];i++){\
+static void NAME##_free(NAME *htable){\
+    for(unsigned int i=0;i<PRIMELESSP2[htable->sizei];i++){\
         NAME##_node *ptr = htable->slots[i];\
         while(ptr!=NULL){\
             NAME##_node *ptrc = ptr;\
@@ -118,7 +118,7 @@ void NAME##_free(NAME *htable){\
     free(htable);\
 }\
 \
-void NAME##_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
+static void NAME##_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
@@ -138,10 +138,10 @@ void NAME##_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
     htable->n_modifications += 1;\
     htable->len += 1;\
     /* Realloc all the nodes in more space */ \
-    if(htable->len>=PRIMELESSP2[htable->sizei]/2){\
+    if((unsigned int)htable->len>=PRIMELESSP2[htable->sizei]/2){\
         NAME##_node **neo_slots = malloc(sizeof(NAME##_node *)*PRIMELESSP2[htable->sizei+1]);\
-        for(int i=0;i<PRIMELESSP2[htable->sizei+1];i++) neo_slots[i] = NULL;\
-        for(int i=0;i<PRIMELESSP2[htable->sizei];i++){\
+        for(unsigned int i=0;i<PRIMELESSP2[htable->sizei+1];i++) neo_slots[i] = NULL;\
+        for(unsigned int i=0;i<PRIMELESSP2[htable->sizei];i++){\
             NAME##_node *ptr = htable->slots[i];\
             while(ptr!=NULL){\
                 NAME##_node *ptrc = ptr;\
@@ -168,7 +168,7 @@ void NAME##_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
     htable->slots[slot] = node;\
 }\
 \
-int NAME##_has(NAME *htable, KEY_STRU key){\
+static int NAME##_has(NAME *htable, KEY_STRU key){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
@@ -184,7 +184,7 @@ int NAME##_has(NAME *htable, KEY_STRU key){\
     return 0;\
 }\
 \
-VAL_STRU NAME##_get(NAME *htable, KEY_STRU key){\
+static VAL_STRU NAME##_get(NAME *htable, KEY_STRU key){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
@@ -206,7 +206,7 @@ VAL_STRU NAME##_get(NAME *htable, KEY_STRU key){\
     return dummy;\
 }\
 \
-VAL_STRU NAME##_pop(NAME *htable, KEY_STRU key){\
+static VAL_STRU NAME##_pop(NAME *htable, KEY_STRU key){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
@@ -225,10 +225,10 @@ VAL_STRU NAME##_pop(NAME *htable, KEY_STRU key){\
             VAL_STRU val = ptrc->val;\
             free(ptrc);\
             /* Realloc all the nodes in less space */ \
-            if(htable->len<PRIMELESSP2[htable->sizei]/4){\
+            if((unsigned int)htable->len<PRIMELESSP2[htable->sizei]/4){\
                 NAME##_node **neo_slots = malloc(sizeof(NAME##_node *)*PRIMELESSP2[htable->sizei-1]);\
-                for(int i=0;i<PRIMELESSP2[htable->sizei-1];i++) neo_slots[i] = NULL;\
-                for(int i=0;i<PRIMELESSP2[htable->sizei];i++){\
+                for(unsigned int i=0;i<PRIMELESSP2[htable->sizei-1];i++) neo_slots[i] = NULL;\
+                for(unsigned int i=0;i<PRIMELESSP2[htable->sizei];i++){\
                     NAME##_node *ptr = htable->slots[i];\
                     while(ptr!=NULL){\
                         NAME##_node *ptrc = ptr;\
@@ -265,12 +265,12 @@ typedef struct {\
     NAME##_node *ptrc;\
 } NAME##_iter;\
 \
-NAME##_iter NAME##_begin(NAME *htable){\
+static NAME##_iter NAME##_begin(NAME *htable){\
     NAME##_iter iter;\
     iter.origin = htable;\
     iter.n_modifications = htable->n_modifications;\
     iter.slot = PRIMELESSP2[iter.origin->sizei];\
-    for(int i=0;i<PRIMELESSP2[iter.origin->sizei];i++){\
+    for(unsigned int i=0;i<PRIMELESSP2[iter.origin->sizei];i++){\
         if(iter.origin->slots[i]!=NULL){\
             iter.ptrc = iter.origin->slots[i];\
             iter.slot = i;\
@@ -280,29 +280,29 @@ NAME##_iter NAME##_begin(NAME *htable){\
     return iter;\
 }\
 \
-void NAME##_iter_next(NAME##_iter *iter){\
+static void NAME##_iter_next(NAME##_iter *iter){\
     if(iter->n_modifications!=iter->origin->n_modifications){\
         assert(!"Hashtable wasn't modified.");\
     }\
     /* Check if iterator is already done */ \
-    if(iter->slot==PRIMELESSP2[iter->origin->sizei]) return;\
+    if((unsigned int)iter->slot==PRIMELESSP2[iter->origin->sizei]) return;\
     /* Move iterator forward until reach end or finding another node */ \
     iter->ptrc = iter->ptrc->next;\
     while(iter->ptrc==NULL){\
         iter->slot += 1;\
-        if(iter->slot==PRIMELESSP2[iter->origin->sizei]) break; \
+        if((unsigned int)iter->slot==PRIMELESSP2[iter->origin->sizei]) break; \
         iter->ptrc = iter->origin->slots[iter->slot];\
     }\
 }\
 \
-int NAME##_iter_done(NAME##_iter *iter){\
+static int NAME##_iter_done(NAME##_iter *iter){\
     if(iter->n_modifications!=iter->origin->n_modifications){\
         assert(!"Hashtable wasn't modified.");\
     }\
-    return iter->slot==PRIMELESSP2[iter->origin->sizei];\
+    return (unsigned int)iter->slot==PRIMELESSP2[iter->origin->sizei];\
 }\
 \
-KEY_STRU NAME##_iter_key(NAME##_iter *iter){\
+static KEY_STRU NAME##_iter_key(NAME##_iter *iter){\
     if(iter->n_modifications!=iter->origin->n_modifications){\
         assert(!"Hashtable wasn't modified.");\
     }\
@@ -310,7 +310,7 @@ KEY_STRU NAME##_iter_key(NAME##_iter *iter){\
     return iter->ptrc->key;\
 }\
 \
-VAL_STRU NAME##_iter_val(NAME##_iter *iter){\
+static VAL_STRU NAME##_iter_val(NAME##_iter *iter){\
     if(iter->n_modifications!=iter->origin->n_modifications){\
         assert(!"Hashtable wasn't modified.");\
     }\
