@@ -33,10 +33,10 @@ void NAME_free(NAME *htable)
 void NAME_add(NAME *htable, KEY_STRU key, VAL_STRU val)
 ^ O(1) Adds a key to the hashtable with the given value. If the key already exists, the current value is replaced.
 
-int NAME_has(NAME *htable, KEY_STRU key)
+int NAME_has(const NAME *htable, KEY_STRU key)
 ^ O(1) Checks if a given key exists.
 
-VAL_STRU NAME_get(NAME *htable, KEY_STRU key)
+VAL_STRU NAME_get(const NAME *htable, KEY_STRU key)
 ^ O(1) Gets the value of a given key.
 
 VAL_STRU NAME_pop(NAME *htable, KEY_STRU key)
@@ -48,22 +48,22 @@ Iterators are designed for traversing the whole hashtable in O(n).
 
 NOTE: Iterators shouldn't be used after their hashtable is freed.
 
-NAME_iter NAME_begin(NAME *htable)
+NAME_iter NAME_begin(const NAME *htable)
 ^ Returns an iterator for the hashtable.
 
-int NAME_iter_done(NAME_iter *iter)
+int NAME_iter_done(const NAME_iter *iter)
 ^ Checks if the iterator has finish.
 
 void NAME_iter_next(NAME_iter *iter)
 ^ Moves the iterator forward.
 
-KEY_STRU NAME_iter_key(NAME_iter *iter)
+KEY_STRU NAME_iter_key(const NAME_iter *iter)
 ^ Retrieves the key at the current iterator.
 
-VAL_STRU NAME_iter_val(NAME_iter *iter)
+VAL_STRU NAME_iter_val(const NAME_iter *iter)
 ^ Retrieves the value at the current iterator.
 
-int NAME_len(NAME *htable)
+int NAME_len(const NAME *htable)
 ^ O(1) Returns the number of items in the hashtable.
 
 ##### VARIABLES:
@@ -168,7 +168,7 @@ static void NAME##_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
     htable->slots[slot] = node;\
 }\
 \
-static int NAME##_has(NAME *htable, KEY_STRU key){\
+static int NAME##_has(const NAME *htable, KEY_STRU key){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
@@ -184,7 +184,7 @@ static int NAME##_has(NAME *htable, KEY_STRU key){\
     return 0;\
 }\
 \
-static VAL_STRU NAME##_get(NAME *htable, KEY_STRU key){\
+static VAL_STRU NAME##_get(const NAME *htable, KEY_STRU key){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
@@ -260,13 +260,13 @@ static VAL_STRU NAME##_pop(NAME *htable, KEY_STRU key){\
 }\
 \
 typedef struct {\
-    NAME *origin;\
+    const NAME *origin;\
     int n_modifications;\
     int slot;\
     NAME##_node *ptrc;\
 } NAME##_iter;\
 \
-static NAME##_iter NAME##_begin(NAME *htable){\
+static NAME##_iter NAME##_begin(const NAME *htable){\
     NAME##_iter iter;\
     iter.origin = htable;\
     iter.n_modifications = htable->n_modifications;\
@@ -296,14 +296,14 @@ static void NAME##_iter_next(NAME##_iter *iter){\
     }\
 }\
 \
-static int NAME##_iter_done(NAME##_iter *iter){\
+static int NAME##_iter_done(const NAME##_iter *iter){\
     if(iter->n_modifications!=iter->origin->n_modifications){\
         assert(!"Hashtable wasn't modified while iterating over it.");\
     }\
     return (unsigned int)iter->slot==PRIMELESSTPOW2[iter->origin->sizei];\
 }\
 \
-static KEY_STRU NAME##_iter_key(NAME##_iter *iter){\
+static KEY_STRU NAME##_iter_key(const NAME##_iter *iter){\
     if(iter->n_modifications!=iter->origin->n_modifications){\
         assert(!"Hashtable wasn't modified while iterating over it.");\
     }\
@@ -311,7 +311,7 @@ static KEY_STRU NAME##_iter_key(NAME##_iter *iter){\
     return iter->ptrc->key;\
 }\
 \
-static VAL_STRU NAME##_iter_val(NAME##_iter *iter){\
+static VAL_STRU NAME##_iter_val(const NAME##_iter *iter){\
     if(iter->n_modifications!=iter->origin->n_modifications){\
         assert(!"Hashtable wasn't modified while iterating over it.");\
     }\
@@ -319,7 +319,7 @@ static VAL_STRU NAME##_iter_val(NAME##_iter *iter){\
     return iter->ptrc->val;\
 }\
 \
-static inline int NAME##_len(NAME *htable){\
+static inline int NAME##_len(const NAME *htable){\
     return htable->len;\
 }\
 \

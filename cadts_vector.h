@@ -28,7 +28,7 @@ void NAME_endadd(NAME *vect, STRU stru)
 STRU NAME_endpop(NAME *vect)
 ^ O(1) Removes the last item from the vector, returning its value.
 
-STRU NAME_endtop(NAME *vect)
+STRU NAME_endtop(const NAME *vect)
 ^ O(1) Returns the last item of the vector.
 
 void NAME_add(NAME *vect, int p, STRU stru)
@@ -37,10 +37,10 @@ void NAME_add(NAME *vect, int p, STRU stru)
 STRU NAME_pop(NAME *vect, int p)
 ^ O(n-p) Deletes the item on position p, returning its value.
 
-int NAME_len(NAME *vect)
+int NAME_len(const NAME *vect)
 ^ O(1) Returns the number of items in the vector.
 
-STRU NAME_item(NAME *vect, int p)
+STRU NAME_item(const NAME *vect, int p)
 ^ O(1) Returns the item at the position p.
 
 STRU NAME_sort(NAME *vect, int (*sortCallback)(const STRU *a, const STRU *b))

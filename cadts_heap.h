@@ -23,7 +23,7 @@ NAME *NAME_init(int size)
 void NAME_free(NAME *heap)
 ^ Liberates the memory requested by the heap.
 
-STRU NAME_peek(NAME *heap)
+STRU NAME_peek(const NAME *heap)
 ^ O(1) Get the smaller item.
 
 STRU NAME_poll(NAME *heap)
@@ -32,7 +32,7 @@ STRU NAME_poll(NAME *heap)
 void NAME_add(NAME *heap, STRU val)
 ^ O(logn) Adds an item to the heap.
 
-int NAME_len(NAME *heap)
+int NAME_len(const NAME *heap)
 ^ O(1) Returns the number of items in the heap.
 
 ##### VARIABLES:
@@ -64,7 +64,7 @@ static void NAME##_free(NAME *heap){\
     free(heap);\
 }\
 \
-static STRU NAME##_peek(NAME *heap){\
+static STRU NAME##_peek(const NAME *heap){\
     assert(heap->len>0);\
     return heap->items[0];\
 }\
@@ -122,7 +122,7 @@ static void NAME##_add(NAME *heap, STRU val){\
     }\
 }\
 \
-static inline int NAME##_len(NAME *heap){\
+static inline int NAME##_len(const NAME *heap){\
     return heap->len;\
 }\
 \

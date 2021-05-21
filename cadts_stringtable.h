@@ -32,10 +32,10 @@ void NAME_free(NAME *htable)
 void NAME_add(NAME *htable, const char *key, VAL_STRU val)
 ^ O(1) Adds a key to the strintable with the given value. If the key already exists, the current value is replaced.
 
-int NAME_has(NAME *htable, const char *key)
+int NAME_has(const NAME *htable, const char *key)
 ^ O(1) Checks if a given key exists.
 
-VAL_STRU NAME_get(NAME *htable, const char *key)
+VAL_STRU NAME_get(const NAME *htable, const char *key)
 ^ O(1) Gets the value of a given key.
 
 VAL_STRU NAME_pop(NAME *htable, const char *key)
@@ -47,24 +47,24 @@ Iterators are designed for traversing the whole stringtable in O(n).
 
 NOTE: Iterators shouldn't be used after their stringtable is freed.
 
-NAME_iter NAME_begin(NAME *htable)
+NAME_iter NAME_begin(const NAME *htable)
 ^ Returns an iterator for the stringtable.
 
-int NAME_iter_done(NAME_iter *iter)
+int NAME_iter_done(const NAME_iter *iter)
 ^ Checks if the iterator has finish.
 
 void NAME_iter_next(NAME_iter *iter)
 ^ Moves the iterator forward.
 
-const char *NAME_iter_key(NAME_iter *iter)
+const char *NAME_iter_key(const NAME_iter *iter)
 ^ Retrieves the key at the current iterator.
 * NOTE: You should not modify the contents of this string.
 * NOTE: You cannot continue using this key if you free the stringtable or pop it from it!
 
-VAL_STRU NAME_iter_val(NAME_iter *iter)
+VAL_STRU NAME_iter_val(const NAME_iter *iter)
 ^ Retrieves the value at the current iterator.
 
-int NAME_len(NAME *htable)
+int NAME_len(const NAME *htable)
 ^ O(1) Returns the number of items in the stringtable.
 
 ##### VARIABLES:
@@ -178,7 +178,7 @@ static void NAME##_add(NAME *htable, const char *key, VAL_STRU val){\
     htable->slots[slot] = node;\
 }\
 \
-static int NAME##_has(NAME *htable, const char *key){\
+static int NAME##_has(const NAME *htable, const char *key){\
     /* Check for presence of the current key */ \
     unsigned int hash = _##NAME##_hash((const unsigned char *) key);\
     unsigned int slot = hash%PRIMELESSTPOW2[htable->sizei];\
@@ -194,7 +194,7 @@ static int NAME##_has(NAME *htable, const char *key){\
     return 0;\
 }\
 \
-static VAL_STRU NAME##_get(NAME *htable, const char *key){\
+static VAL_STRU NAME##_get(const NAME *htable, const char *key){\
     /* Check for presence of the current key */ \
     unsigned int hash = _##NAME##_hash((const unsigned char *) key);\
     unsigned int slot = hash%PRIMELESSTPOW2[htable->sizei];\
@@ -266,13 +266,13 @@ static VAL_STRU NAME##_pop(NAME *htable, const char *key){\
 }\
 \
 typedef struct {\
-    NAME *origin;\
+    const NAME *origin;\
     int n_modifications;\
     int slot;\
     NAME##_node *ptrc;\
 } NAME##_iter;\
 \
-static NAME##_iter NAME##_begin(NAME *htable){\
+static NAME##_iter NAME##_begin(const NAME *htable){\
     NAME##_iter iter;\
     iter.origin = htable;\
     iter.n_modifications = htable->n_modifications;\
@@ -302,14 +302,14 @@ static void NAME##_iter_next(NAME##_iter *iter){\
     }\
 }\
 \
-static int NAME##_iter_done(NAME##_iter *iter){\
+static int NAME##_iter_done(const NAME##_iter *iter){\
     if(iter->n_modifications!=iter->origin->n_modifications){\
         assert(!"Hashstring wasn't modified while iterating over it.");\
     }\
     return (unsigned int)iter->slot==PRIMELESSTPOW2[iter->origin->sizei];\
 }\
 \
-static const char *NAME##_iter_key(NAME##_iter *iter){\
+static const char *NAME##_iter_key(const NAME##_iter *iter){\
     if(iter->n_modifications!=iter->origin->n_modifications){\
         assert(!"Hashstring wasn't modified while iterating over it.");\
     }\
@@ -317,7 +317,7 @@ static const char *NAME##_iter_key(NAME##_iter *iter){\
     return iter->ptrc->key;\
 }\
 \
-static VAL_STRU NAME##_iter_val(NAME##_iter *iter){\
+static VAL_STRU NAME##_iter_val(const NAME##_iter *iter){\
     if(iter->n_modifications!=iter->origin->n_modifications){\
         assert(!"Hashstring wasn't modified while iterating over it.");\
     }\
@@ -325,7 +325,7 @@ static VAL_STRU NAME##_iter_val(NAME##_iter *iter){\
     return iter->ptrc->val;\
 }\
 \
-static inline int NAME##_len(NAME *htable){\
+static inline int NAME##_len(const NAME *htable){\
     return htable->len;\
 }\
 \
