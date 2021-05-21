@@ -5,7 +5,7 @@
       .---.>^.^<            C A.D.T.'s
     /(     '-´-'   C macros for general purpose
  .-´.´) /--| /           data structures.
-'--´  '-"  '-"  
+'--´  '-"  '-"
 ```
 
 **WARNING:** This library is still being developed, thus many changes may arise.
@@ -19,7 +19,7 @@ To define an ADT for an specific datatype you have to use the macro defined on i
 For instance, to define a vector of `int`s (that we will name `intvec`), you have to use this code:
 
 ```c
-#include <cadts_vector.h>
+#include "cadts_vector.h"
 
 CADTS_VECTOR(intvec,int)
 ```
@@ -27,7 +27,7 @@ CADTS_VECTOR(intvec,int)
 You can also create ADTs for your own structs, passing their name as a parameter.
 
 ```c
-#include <cadts_vector.h>
+#include "cadts_vector.h"
 
 typedef struct{
     float foo;
@@ -37,7 +37,7 @@ typedef struct{
 CADTS_VECTOR(foobarvec,foobarpair)
 ```
 
-Note that this doesn't create an instance of `foobarvec`, just defines the `foobarvec` struct and its "*methods*" (functions really), that's why it never goes inside a function.
+Note that this macro doesn't create an instance of `foobarvec`, just defines the `foobarvec` struct and its "*methods*" (functions really), that's why it never goes inside a function.
 
 ## Using an ADT
 
@@ -62,3 +62,7 @@ After using an ADT, you have to call the `[adtname]_free` function over it so th
 * **Never** access the ADTs by their members unless they are specified in the `VARIABLES` section of their documentation, also don't modify the members that are **read only**.
 
 * **Never** define two ADTs with the same name, this will result in "*methods*" generated with the same name and compilation will fail.
+
+## TODOs:
+
+* Detect errors when `malloc` fails to allocate memory.

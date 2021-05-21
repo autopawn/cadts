@@ -41,5 +41,7 @@ int main(int argc, char **argv){
     }
     printf("\n\n");
 
+    intVector_free(iVec);
+
     return 0;
 }
