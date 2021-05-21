@@ -21,11 +21,11 @@ int main(int argc, char const *argv[]){
         floatvec_endpop(fvec);
     }
     // Print last element
-    printf("%f\n", floatvec_endtop(fvec));
+    printf("%.3f\n", floatvec_endtop(fvec));
     // Print vector
     for(int i=0;i< floatvec_len(fvec);i++){
         // Access by "items" array, this can only be done with vectors.
-        printf("%f ",fvec->items[i]);
+        printf("%.3f ",fvec->items[i]);
     }
     printf("\n");
     // Sort vector acceding by array
@@ -33,7 +33,7 @@ int main(int argc, char const *argv[]){
     // Print vector
     for(int i=0;i< floatvec_len(fvec);i++){
         // Access by "items" array, this can only be done with vectors.
-        printf("%f ",fvec->items[i]);
+        printf("%.3f ",fvec->items[i]);
     }
     printf("\n");
     // Free vector
