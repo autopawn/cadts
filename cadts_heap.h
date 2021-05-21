@@ -9,7 +9,7 @@
 /*
 ##### DEFINITION:
 
-A heap is a binary tree where each node is smaller (or another propriety) than their children. It can be used to retrieve in O(logn) the smallest item.
+A heap is a binary tree where each node is smaller than their children. It can be used to retrieve in O(logn) the smallest item.
 
 #define CADTS_HEAP(NAME,STRU,A_CMP_B)
 ^ Where NAME is the name that the ADT will get and STRU is the datatype of its items.
