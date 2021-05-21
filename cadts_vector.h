@@ -97,7 +97,7 @@ static STRU NAME##_endpop(NAME *vect){\
     return vect->items[vect->len];\
 }\
 \
-static STRU NAME##_endtop(NAME *vect){\
+static STRU NAME##_endtop(const NAME *vect){\
     assert(vect->len>0);\
     return vect->items[vect->len - 1];\
 }\
@@ -125,11 +125,11 @@ static STRU NAME##_pop(NAME *vect, int p){\
     return ret;\
 }\
 \
-static inline int NAME##_len(NAME *vect){\
+static inline int NAME##_len(const NAME *vect){\
     return vect->len;\
 }\
 \
-static STRU NAME##_item(NAME *vect, int p){\
+static STRU NAME##_item(const NAME *vect, int p){\
     assert(p>=0 && p<vect->len);\
     return vect->items[p];\
 }\
