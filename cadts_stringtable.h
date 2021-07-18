@@ -179,6 +179,7 @@ static void NAME##_add(NAME *htable, const char *key, VAL_STRU val){\
 }\
 \
 static int NAME##_has(const NAME *htable, const char *key){\
+    if(key==NULL) return 0;\
     /* Check for presence of the current key */ \
     unsigned int hash = _##NAME##_hash((const unsigned char *) key);\
     unsigned int slot = hash%PRIMELESSTPOW2[htable->capacity_i];\
