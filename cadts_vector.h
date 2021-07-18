@@ -16,8 +16,8 @@ A vector is just an array that resizes once its capacity is not enough to store 
 
 ##### FUNCTIONS:
 
-NAME *NAME_init(int size)
-^ Creates a vector of the given size (values smaller than 1 are set to 1).
+NAME *NAME_init(int capacity)
+^ Creates a vector of the given capacity (values smaller than 1 are set to 1).
 
 void NAME_free(NAME *vect)
 ^ Liberates the memory requested by the vector.
@@ -64,16 +64,16 @@ STRU vect->items[k]
 \
 typedef struct {\
     int len;\
-    int size;\
+    int capacity;\
     STRU *items;\
 } NAME;\
 \
-static NAME *NAME##_init(int size){\
+static NAME *NAME##_init(int capacity){\
     NAME *vect = malloc(sizeof(NAME));\
     vect->len = 0;\
-    if(size<1) size = 1;\
-    vect->size = size;\
-    vect->items = (STRU *) malloc(sizeof(STRU)*vect->size);\
+    if(capacity<1) capacity = 1;\
+    vect->capacity = capacity;\
+    vect->items = (STRU *) malloc(sizeof(STRU)*vect->capacity);\
     return vect;\
 }\
 \
@@ -83,9 +83,9 @@ static void NAME##_free(NAME *vect){\
 }\
 \
 static void NAME##_endadd(NAME *vect, STRU stru){\
-    if(vect->len==vect->size){\
-        vect->size *= 2;\
-        vect->items = (STRU *) realloc(vect->items,sizeof(STRU)*vect->size);\
+    if(vect->len==vect->capacity){\
+        vect->capacity *= 2;\
+        vect->items = (STRU *) realloc(vect->items,sizeof(STRU)*vect->capacity);\
     }\
     vect->items[vect->len] = stru;\
     vect->len += 1;\
@@ -104,9 +104,9 @@ static STRU NAME##_endtop(const NAME *vect){\
 \
 static void NAME##_add(NAME *vect, int p, STRU stru){\
     assert(p>=0 && p<=vect->len);\
-    if(vect->len==vect->size){\
-        vect->size *= 2;\
-        vect->items = (STRU *) realloc(vect->items,sizeof(STRU)*vect->size);\
+    if(vect->len==vect->capacity){\
+        vect->capacity *= 2;\
+        vect->items = (STRU *) realloc(vect->items,sizeof(STRU)*vect->capacity);\
     }\
     for(int i=vect->len-1; p<=i; i--){\
         vect->items[i+1] = vect->items[i];\

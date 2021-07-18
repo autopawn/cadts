@@ -91,7 +91,7 @@ struct NAME##_node {\
 typedef struct {\
     int n_modifications;\
     int len;\
-    int sizei;\
+    int capacity_i;\
     NAME##_node **slots;\
 } NAME;\
 \
@@ -99,14 +99,14 @@ static NAME *NAME##_init(){\
     NAME *htable = malloc(sizeof(NAME));\
     htable->n_modifications = 0;\
     htable->len = 0;\
-    htable->sizei = 0;\
-    htable->slots = malloc(sizeof(NAME##_node *)*PRIMELESSTPOW2[htable->sizei]);\
-    for(unsigned int i=0;i<PRIMELESSTPOW2[htable->sizei];i++) htable->slots[i] = NULL;\
+    htable->capacity_i = 0;\
+    htable->slots = malloc(sizeof(NAME##_node *)*PRIMELESSTPOW2[htable->capacity_i]);\
+    for(unsigned int i=0;i<PRIMELESSTPOW2[htable->capacity_i];i++) htable->slots[i] = NULL;\
     return htable;\
 }\
 \
 static void NAME##_free(NAME *htable){\
-    for(unsigned int i=0;i<PRIMELESSTPOW2[htable->sizei];i++){\
+    for(unsigned int i=0;i<PRIMELESSTPOW2[htable->capacity_i];i++){\
         NAME##_node *ptr = htable->slots[i];\
         while(ptr!=NULL){\
             NAME##_node *ptrc = ptr;\
@@ -122,7 +122,7 @@ static void NAME##_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
-    unsigned int slot = hash%PRIMELESSTPOW2[htable->sizei];\
+    unsigned int slot = hash%PRIMELESSTPOW2[htable->capacity_i];\
     NAME##_node *ptr = htable->slots[slot];\
     while(ptr!=NULL){\
         NAME##_node *ptrc = ptr;\
@@ -138,10 +138,10 @@ static void NAME##_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
     htable->n_modifications += 1;\
     htable->len += 1;\
     /* Realloc all the nodes in more space */ \
-    if((unsigned int)htable->len>=PRIMELESSTPOW2[htable->sizei]/2){\
-        NAME##_node **neo_slots = malloc(sizeof(NAME##_node *)*PRIMELESSTPOW2[htable->sizei+1]);\
-        for(unsigned int i=0;i<PRIMELESSTPOW2[htable->sizei+1];i++) neo_slots[i] = NULL;\
-        for(unsigned int i=0;i<PRIMELESSTPOW2[htable->sizei];i++){\
+    if((unsigned int)htable->len>=PRIMELESSTPOW2[htable->capacity_i]/2){\
+        NAME##_node **neo_slots = malloc(sizeof(NAME##_node *)*PRIMELESSTPOW2[htable->capacity_i+1]);\
+        for(unsigned int i=0;i<PRIMELESSTPOW2[htable->capacity_i+1];i++) neo_slots[i] = NULL;\
+        for(unsigned int i=0;i<PRIMELESSTPOW2[htable->capacity_i];i++){\
             NAME##_node *ptr = htable->slots[i];\
             while(ptr!=NULL){\
                 NAME##_node *ptrc = ptr;\
@@ -149,16 +149,16 @@ static void NAME##_add(NAME *htable, KEY_STRU key, VAL_STRU val){\
                 /* Add this node in the neo_slots */ \
                 KEY_STRU A = ptrc->key;\
                 unsigned int hash = ((unsigned int)(HASH_A));\
-                unsigned int cslot = hash%PRIMELESSTPOW2[htable->sizei+1];\
+                unsigned int cslot = hash%PRIMELESSTPOW2[htable->capacity_i+1];\
                 ptrc->next = neo_slots[cslot];\
                 neo_slots[cslot] = ptrc;\
             }\
         }\
         free(htable->slots);\
         htable->slots = neo_slots;\
-        htable->sizei += 1;\
+        htable->capacity_i += 1;\
         /* Recompute slot of the hash */ \
-        slot = hash%PRIMELESSTPOW2[htable->sizei];\
+        slot = hash%PRIMELESSTPOW2[htable->capacity_i];\
     }\
     /* Create and add new node */ \
     NAME##_node *node = malloc(sizeof(NAME##_node));\
@@ -172,7 +172,7 @@ static int NAME##_has(const NAME *htable, KEY_STRU key){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
-    unsigned int slot = hash%PRIMELESSTPOW2[htable->sizei];\
+    unsigned int slot = hash%PRIMELESSTPOW2[htable->capacity_i];\
     NAME##_node *ptr = htable->slots[slot];\
     while(ptr!=NULL){\
         NAME##_node *ptrc = ptr;\
@@ -188,7 +188,7 @@ static VAL_STRU NAME##_get(const NAME *htable, KEY_STRU key){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
-    unsigned int slot = hash%PRIMELESSTPOW2[htable->sizei];\
+    unsigned int slot = hash%PRIMELESSTPOW2[htable->capacity_i];\
     NAME##_node *ptr = htable->slots[slot];\
     while(ptr!=NULL){\
         NAME##_node *ptrc = ptr;\
@@ -210,7 +210,7 @@ static VAL_STRU NAME##_pop(NAME *htable, KEY_STRU key){\
     /* Check for presence of the current key */ \
     KEY_STRU A = key;\
     unsigned int hash = ((unsigned int)(HASH_A));\
-    unsigned int slot = hash%PRIMELESSTPOW2[htable->sizei];\
+    unsigned int slot = hash%PRIMELESSTPOW2[htable->capacity_i];\
     NAME##_node **preptr = &htable->slots[slot];\
     while(*preptr!=NULL){\
         NAME##_node *ptrc = *preptr;\
@@ -226,10 +226,10 @@ static VAL_STRU NAME##_pop(NAME *htable, KEY_STRU key){\
             /* Free node memory */ \
             free(ptrc);\
             /* Realloc all the nodes in less space */ \
-            if((unsigned int)htable->len<PRIMELESSTPOW2[htable->sizei]/4){\
-                NAME##_node **neo_slots = malloc(sizeof(NAME##_node *)*PRIMELESSTPOW2[htable->sizei-1]);\
-                for(unsigned int i=0;i<PRIMELESSTPOW2[htable->sizei-1];i++) neo_slots[i] = NULL;\
-                for(unsigned int i=0;i<PRIMELESSTPOW2[htable->sizei];i++){\
+            if((unsigned int)htable->len<PRIMELESSTPOW2[htable->capacity_i]/4){\
+                NAME##_node **neo_slots = malloc(sizeof(NAME##_node *)*PRIMELESSTPOW2[htable->capacity_i-1]);\
+                for(unsigned int i=0;i<PRIMELESSTPOW2[htable->capacity_i-1];i++) neo_slots[i] = NULL;\
+                for(unsigned int i=0;i<PRIMELESSTPOW2[htable->capacity_i];i++){\
                     NAME##_node *ptr = htable->slots[i];\
                     while(ptr!=NULL){\
                         NAME##_node *ptrc = ptr;\
@@ -237,14 +237,14 @@ static VAL_STRU NAME##_pop(NAME *htable, KEY_STRU key){\
                         /* Add this node in the neo_slots */ \
                         KEY_STRU A = ptrc->key;\
                         unsigned int hash = ((unsigned int)(HASH_A));\
-                        unsigned int cslot = hash%PRIMELESSTPOW2[htable->sizei-1];\
+                        unsigned int cslot = hash%PRIMELESSTPOW2[htable->capacity_i-1];\
                         ptrc->next = neo_slots[cslot];\
                         neo_slots[cslot] = ptrc;\
                     }\
                 }\
                 free(htable->slots);\
                 htable->slots = neo_slots;\
-                htable->sizei -= 1;\
+                htable->capacity_i -= 1;\
             }\
             /* Return val */ \
             return val;\
@@ -270,8 +270,8 @@ static NAME##_iter NAME##_begin(const NAME *htable){\
     NAME##_iter iter;\
     iter.origin = htable;\
     iter.n_modifications = htable->n_modifications;\
-    iter.slot = PRIMELESSTPOW2[iter.origin->sizei];\
-    for(unsigned int i=0;i<PRIMELESSTPOW2[iter.origin->sizei];i++){\
+    iter.slot = PRIMELESSTPOW2[iter.origin->capacity_i];\
+    for(unsigned int i=0;i<PRIMELESSTPOW2[iter.origin->capacity_i];i++){\
         if(iter.origin->slots[i]!=NULL){\
             iter.ptrc = iter.origin->slots[i];\
             iter.slot = i;\
@@ -286,12 +286,12 @@ static void NAME##_iter_next(NAME##_iter *iter){\
         assert(!"Hashtable wasn't modified while iterating over it.");\
     }\
     /* Check if iterator is already done */ \
-    if((unsigned int)iter->slot==PRIMELESSTPOW2[iter->origin->sizei]) return;\
+    if((unsigned int)iter->slot==PRIMELESSTPOW2[iter->origin->capacity_i]) return;\
     /* Move iterator forward until reach end or finding another node */ \
     iter->ptrc = iter->ptrc->next;\
     while(iter->ptrc==NULL){\
         iter->slot += 1;\
-        if((unsigned int)iter->slot==PRIMELESSTPOW2[iter->origin->sizei]) break; \
+        if((unsigned int)iter->slot==PRIMELESSTPOW2[iter->origin->capacity_i]) break; \
         iter->ptrc = iter->origin->slots[iter->slot];\
     }\
 }\
@@ -300,7 +300,7 @@ static int NAME##_iter_done(const NAME##_iter *iter){\
     if(iter->n_modifications!=iter->origin->n_modifications){\
         assert(!"Hashtable wasn't modified while iterating over it.");\
     }\
-    return (unsigned int)iter->slot==PRIMELESSTPOW2[iter->origin->sizei];\
+    return (unsigned int)iter->slot==PRIMELESSTPOW2[iter->origin->capacity_i];\
 }\
 \
 static KEY_STRU NAME##_iter_key(const NAME##_iter *iter){\

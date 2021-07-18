@@ -17,8 +17,8 @@ A_CMP_B is a comparison between a literal "A" and a literal "B", to use the comp
 
 ##### FUNCTIONS:
 
-NAME *NAME_init(int size)
-^ Creates a heap of the given size (values smaller than 1 are set to 1).
+NAME *NAME_init(int capacity)
+^ Creates a heap of the given capacity (values smaller than 1 are set to 1).
 
 void NAME_free(NAME *heap)
 ^ Liberates the memory requested by the heap.
@@ -46,16 +46,16 @@ int NAME_len(const NAME *heap)
 \
 typedef struct {\
     int len;\
-    int size;\
+    int capacity;\
     STRU *items;\
 } NAME;\
 \
-static NAME *NAME##_init(int size){\
+static NAME *NAME##_init(int capacity){\
     NAME *heap = malloc(sizeof(NAME));\
     heap->len = 0;\
-    if(size<1) size = 1;\
-    heap->size = size;\
-    heap->items = malloc(sizeof(STRU)*heap->size);\
+    if(capacity<1) capacity = 1;\
+    heap->capacity = capacity;\
+    heap->items = malloc(sizeof(STRU)*heap->capacity);\
     return heap;\
 }\
 \
@@ -97,9 +97,9 @@ static STRU NAME##_poll(NAME *heap){\
 }\
 \
 static void NAME##_add(NAME *heap, STRU val){\
-    if(heap->len==heap->size){\
-        heap->size *= 2;\
-        heap->items = realloc(heap->items,sizeof(STRU)*heap->size);\
+    if(heap->len==heap->capacity){\
+        heap->capacity *= 2;\
+        heap->items = realloc(heap->items,sizeof(STRU)*heap->capacity);\
     }\
     /**/\
     heap->items[heap->len] = val;\
